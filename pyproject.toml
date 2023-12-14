@@ -46,6 +46,7 @@ pytype = "2023.12.8"
 
 [tool.poetry.scripts]
 gamutrf-compress_dirs = 'gamutrf.__main__:compress_dirs'
+gamutrf-fft = 'gamutrf.__main__:fft'
 gamutrf-freqxlator = 'gamutrf.__main__:freqxlator'
 gamutrf-offline= 'gamutrf.__main__:offline'
 gamutrf-samples2raw = 'gamutrf.__main__:samples2raw'
