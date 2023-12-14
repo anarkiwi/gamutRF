@@ -1,5 +1,6 @@
 """Main entrypoint for GamutRF"""
 from gamutrf.compress_dirs import main as compress_dirs_main
+from gamutrf.fft import main as fft_main
 from gamutrf.freqxlator import main as freqxlator_main
 from gamutrf.offline import main as offline_main
 from gamutrf.samples2raw import main as samples2raw_main
@@ -14,6 +15,9 @@ def compress_dirs():
     """Entrypoint for compress_dirs"""
     compress_dirs_main()
 
+def fft():
+    """Entrypoint for fft"""
+    fft_main()
 
 def freqxlator():
     """Entrypoint for freqxlator"""
