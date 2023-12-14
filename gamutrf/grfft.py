@@ -33,30 +33,36 @@ class grfft(gr.top_block):
 
         out_zmq_addr = "tcp://0.0.0.0:11001"
         in_zmq_addr = "tcp://0.0.0.0:11002"
-        fft_batch_size, fft_blocks = self.get_offload_fft_blocks(vkfft, fft_batch_size, nfft) 
+        fft_batch_size, fft_blocks = self.get_offload_fft_blocks(
+            vkfft, fft_batch_size, nfft
+        )
 
-        fft_blocks = [
-            zeromq.sub_source(
-                gr.sizeof_gr_complex,
-                fft_batch_size * nfft,
-                in_zmq_addr,
-                timeout=100,
-                pass_tags=True,
-                hwm=65536,
-                key="",
-                bind=True,
-            )
-        ] + fft_blocks + [
-            zeromq.pub_sink(
-                gr.sizeof_gr_complex,
-                nfft,
-                out_zmq_addr,
-                timeout=100,
-                pass_tags=True,
-                hwm=65536,
-                key="",
-            )
-        ]
+        fft_blocks = (
+            [
+                zeromq.sub_source(
+                    gr.sizeof_gr_complex,
+                    fft_batch_size * nfft,
+                    in_zmq_addr,
+                    timeout=100,
+                    pass_tags=True,
+                    hwm=65536,
+                    key="",
+                    bind=True,
+                )
+            ]
+            + fft_blocks
+            + [
+                zeromq.pub_sink(
+                    gr.sizeof_gr_complex,
+                    nfft,
+                    out_zmq_addr,
+                    timeout=100,
+                    pass_tags=True,
+                    hwm=65536,
+                    key="",
+                )
+            ]
+        )
         self.connect_blocks(fft_blocks[0], fft_blocks[1:])
 
     def connect_blocks(self, source, other_blocks, last_block_port=0):

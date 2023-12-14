@@ -15,9 +15,11 @@ def compress_dirs():
     """Entrypoint for compress_dirs"""
     compress_dirs_main()
 
+
 def fft():
     """Entrypoint for fft"""
     fft_main()
+
 
 def freqxlator():
     """Entrypoint for freqxlator"""

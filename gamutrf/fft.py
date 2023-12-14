@@ -64,6 +64,6 @@ def main():
     tb = grfft(**fft_args)
     tb.start()
     while True:
-       time.sleep(1)
+        time.sleep(1)
     tb.stop()
     tb.wait()

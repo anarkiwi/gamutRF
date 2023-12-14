@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import socket
 import sys
 from pathlib import Path
 
 try:
     from gnuradio import filter as grfilter  # pytype: disable=import-error
     from gnuradio import blocks  # pytype: disable=import-error
-    from gnuradio import fft  # pytype: disable=import-error
     from gnuradio import gr  # pytype: disable=import-error
     from gnuradio import zeromq  # pytype: disable=import-error
     from gnuradio.fft import window  # pytype: disable=import-error
@@ -102,6 +102,9 @@ class grscan(gr.top_block):
         ##################################################
 
         logging.info(f"will scan from {freq_start} to {freq_end}")
+
+        self.fft_addr = socket.getaddrinfo("fft", 0)[-1][-1][0]
+
         self.sources, cmd_port, self.workaround_start_hook = get_source(
             sdr,
             samp_rate,
@@ -154,22 +157,31 @@ class grscan(gr.top_block):
             f"requested retuning across {freq_range/1e6}MHz every {tune_step_fft} FFTs, dwell time {tune_dwell_ms}ms"
         )
 
-        self.fft_blocks = (
-            self.get_dc_blocks(dc_block_len, dc_block_long)
-            + self.get_fft_blocks(
-                vkfft,
-                fft_batch_size,
-                nfft,
-                freq_start,
-                freq_end,
-                tune_step_hz,
-                tune_step_fft,
-                skip_tune_step,
-                tuning_ranges,
-                pretune,
-            )
-            + self.get_db_blocks(nfft, samp_rate, scaling)
+        self.to_fft_blocks = self.get_dc_blocks(
+            dc_block_len, dc_block_long
+        ) + self.get_fft_blocks(
+            vkfft,
+            fft_batch_size,
+            nfft,
+            freq_start,
+            freq_end,
+            tune_step_hz,
+            tune_step_fft,
+            skip_tune_step,
+            tuning_ranges,
+            pretune,
         )
+        self.fft_blocks = [
+            zeromq.sub_source(
+                gr.sizeof_gr_complex,
+                fft_batch_size * nfft,
+                f"tcp://{self.fft_addr}:11001",
+                timeout=100,
+                pass_tags=True,
+                hwm=65536,
+                key="",
+            )
+        ] + self.get_db_blocks(nfft, samp_rate, scaling)
         fft_dir = sample_dir
         if not write_samples:
             fft_dir = ""
@@ -262,10 +274,11 @@ class grscan(gr.top_block):
 
         self.connect_blocks(self.inference_blocks[0], self.inference_blocks[1:])
         for pipeline_blocks in (
-            self.fft_blocks,
+            self.to_fft_blocks,
             self.samples_blocks,
         ):
             self.connect_blocks(self.sources[-1], pipeline_blocks)
+        self.connect_blocks(self.fft_blocks[0], self.fft_blocks[1:])
 
     def connect_blocks(self, source, other_blocks, last_block_port=0):
         last_block = source
@@ -324,31 +337,20 @@ class grscan(gr.top_block):
         fft_batch_size,
         nfft,
     ):
-        fft_block = None
-        fft_roll = False
-        if self.wavelearner:
-            fft_block = self.wavelearner.fft(int(fft_batch_size * nfft), (nfft), True)
-            fft_roll = True
-        elif vkfft:
-            fft_block = self.iqtlabs.vkfft(int(fft_batch_size * nfft), nfft, True)
-        else:
+        if not self.wavelearner and not vkfft:
             fft_batch_size = 1
-            fft_blocks = [
-                fft.fft_vcc(nfft, True, self.get_window(nfft), True, 1),
-            ]
-            return fft_batch_size, fft_blocks
 
-        fft_blocks = [
-            blocks.multiply_const_vff(
-                [val for val in self.get_window(nfft) for _ in range(2)]
-                * fft_batch_size
-            ),
-            fft_block,
-            blocks.vector_to_stream(gr.sizeof_gr_complex * nfft, fft_batch_size),
-        ]
-        if fft_roll:
-            fft_blocks.append(self.iqtlabs.vector_roll(nfft))
-        return fft_batch_size, fft_blocks
+        fft_block = zeromq.pub_sink(
+            gr.sizeof_gr_complex,
+            nfft * fft_batch_size,
+            f"tcp://{self.fft_addr}:11002",
+            timeout=100,
+            pass_tags=True,
+            hwm=65536,
+            key="",
+            bind=False,
+        )
+        return fft_batch_size, [fft_block]
 
     def get_dc_blocks(self, dc_block_len, dc_block_long):
         if dc_block_len:
