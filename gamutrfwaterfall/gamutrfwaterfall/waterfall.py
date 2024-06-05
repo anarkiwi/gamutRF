@@ -14,6 +14,8 @@ from pathlib import Path
 import requests
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib import scale as mscale
+from matplotlib import transforms as mtransforms
 import numpy as np
 import zmq
 from flask import (
@@ -46,6 +48,65 @@ CONFIG_VARS = {
     "tune_step_fft": None,
     "sweep_sec": None,
 }
+
+
+def CustomScaleFactory():
+    class CustomScale(mscale.ScaleBase):
+        name = "custom"
+
+        def __init__(self, axis, **kwargs):
+            mscale.ScaleBase.__init__(self)
+            self.thresh = None  # thresh
+
+        def get_transform(self):
+            return self.CustomTransform(self.thresh)
+
+        def set_default_locators_and_formatters(self, axis):
+            pass
+
+        class CustomTransform(mtransforms.Transform):
+            input_dims = 1
+            output_dims = 1
+            is_separable = True
+
+            # lower = l
+            # upper = u
+            def __init__(self, thresh):
+                mtransforms.Transform.__init__(self)
+                self.thresh = thresh
+
+            def transform(self, a):
+                aa = a.copy()
+                # aa[a>self.lower] = a[a>self.lower]-(self.upper-self.lower)
+                # aa[(a>self.lower)&(a<self.upper)] = self.lower
+                return aa
+
+            def inverted(self):
+                return CustomScale.InvertedCustomTransform(self.thresh)
+
+        class InvertedCustomTransform(mtransforms.Transform):
+            input_dims = 1
+            output_dims = 1
+            is_separable = True
+            # lower = l
+            # upper = u
+
+            def __init__(self, thresh):
+                mtransforms.Transform.__init__(self)
+                self.thresh = thresh
+
+            def transform(self, a):
+                aa = a.copy()
+                # aa[a>self.lower] = a[a>self.lower]+(self.upper-self.lower)
+                return aa
+
+            def inverted(self):
+                return CustomScale.CustomTransform(self.thresh)
+
+    return CustomScale
+
+
+mscale.register_scale(CustomScaleFactory())
 
 
 def safe_savefig(path):
@@ -352,7 +413,9 @@ def reset_fig(
     plt.subplots_adjust(hspace=0.15)
     plt.subplots_adjust(left=0.20)
     state.ax_psd = state.fig.add_subplot(3, 1, 1)
+    state.ax_psd.set_xscale("custom")
     state.ax = state.fig.add_subplot(3, 1, (2, 3))
+    state.ax.set_xscale("custom")
     state.psd_title = state.ax_psd.text(
         0.5,
         1.05,
@@ -436,6 +499,7 @@ def reset_fig(
     state.cbar_ax = state.fig.add_axes([0.92, 0.10, 0.03, 0.5])
     state.cbar = state.fig.colorbar(state.sm, cax=state.cbar_ax)
     state.cbar.set_label("dB", rotation=0)
+    state.cbar_ax.set_xscale("custom")
 
     # SPECTROGRAM TITLE
     _title = state.ax.text(
