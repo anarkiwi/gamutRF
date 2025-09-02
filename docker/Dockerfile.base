@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /root
 RUN git clone https://github.com/anarkiwi/gr-iqtlabs -b 1.0.0
 COPY --from=anarkiwi/gamutrf-vkfft:latest /root /root/gr-iqtlabs
-WORKDIR /root/gr-anarkiwi/build
+WORKDIR /root/gr-iqtlabs/build
 COPY --from=anarkiwi/gamutrf-sigmf:latest /usr/local /usr/local
 RUN cmake .. && make -j "$(nproc)" && make install && find /usr/local -name \*.a -delete
 
