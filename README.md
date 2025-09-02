@@ -28,7 +28,7 @@ Development with GamutRF requires familiarity with gnuradio, an SDR, a x86_64 ho
 ### Local development
 
 * Install [gnuradio](https://wiki.gnuradio.org/index.php/InstallingGR), 3.10 or later
-* Install [gr-iqtlabs](https://github.com/IQTLabs/gr-iqtlabs)
+* Install [gr-iqtlabs](https://github.com/anarkiwi/gr-iqtlabs)
 * Make modifications, and install with ```poetry install```
 * Run tests with ```pytest```
 
@@ -36,5 +36,5 @@ Development with GamutRF requires familiarity with gnuradio, an SDR, a x86_64 ho
 
 Follow above local development instructions, and then build containers (tests will be run inside the containers).
 
-* ```docker build -f docker/Dockerfile.base docker -t iqtlabs/gamutrf-base:latest```
-* ```docker build -f Dockerfile . -t iqtlabs/gamutrf:latest```
+* ```docker build -f docker/Dockerfile.base docker -t anarkiwi/gamutrf-base:latest```
+* ```docker build -f Dockerfile . -t anarkiwi/gamutrf:latest```

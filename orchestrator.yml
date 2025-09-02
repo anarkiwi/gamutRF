@@ -9,30 +9,9 @@ networks:
     external: true
     name: none
 services:
-  compass:
-    restart: always
-    image: iqtlabs/pibackbone-compass:v0.4.5
-    networks:
-      - gamutrf
-    devices:
-      - "/dev/i2c-1:/dev/i2c-1"
-    ports:
-      - '8000:8000'
-    command:
-      # Set correct compass settings for your compass and location
-      - --compass=qmc5883l
-      - --calibration=0
-      - --declination=0
-  mqtt:
-    restart: always
-    image: iqtlabs/edgetech-mqtt-dev:latest
-    networks:
-      - gamutrf
-    ports:
-      - '1883:1883'
   gamutrf:
     restart: always
-    image: iqtlabs/gamutrf:latest
+    image: anarkiwi/gamutrf:latest
     networks:
       - gamutrf
     ports:
@@ -48,18 +27,18 @@ services:
       - /dev/dri/renderD128:/dev/dri/renderD128
     # nvidia container toolkit etc must be installed.
     # Comment out "deploy" if on non-x86 platform (e.g. Pi4)
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: 1
+    #          capabilities: [gpu]
     # if torchserve is not being used, comment out the
     # dependency.
-    depends_on:
-      torchserve:
-        condition: service_healthy
+    #depends_on:
+    #  torchserve:
+    #    condition: service_healthy
     volumes:
       - '${VOL_PREFIX}:/logs'
     # cause FFT wisdom to be cached.
@@ -81,11 +60,11 @@ services:
       - --tune-step-fft=512
       - --db_clamp_floor=-150
       - --fft_batch_size=256
-      - --mqtt_server=mqtt
+      # - --mqtt_server=mqtt
       - --no-compass
       - --peak_fft_range=50
-      - --use_external_gps
-      - --use_external_heading
+      # - --use_external_gps
+      # - --use_external_heading
       - --no-vkfft
       - --rotate_secs=60
       - --colormap=20
@@ -93,22 +72,22 @@ services:
       - --pretune
       # - --external_gps_server=1.2.3.4
       # - --external_gps_server_port=8888
-      - --inference_text_color=black
-      - --inference_output_dir=/logs/inference
-      - --inference_addr=0.0.0.0
-      - --inference_port=10001
-      - --inference_min_confidence=0.25
-      - --inference_min_db=-1e9
-      - --inference_text_color=black
-      - --n_inference=7
-      - --n_image=7
+      # - --inference_text_color=black
+      # - --inference_output_dir=/logs/inference
+      # - --inference_addr=0.0.0.0
+      # - --inference_port=10001
+      # - --inference_min_confidence=0.25
+      # - --inference_min_db=-1e9
+      # - --inference_text_color=black
+      # - --n_inference=7
+      # - --n_image=7
       # - --inference_model_server=torchserve:8080
       # - --inference_model_name=mini2_snr
-      - --iq_inference_squelch_db=-50
-      - --iq_inference_model_server=torchserve:8080
-      - --iq_inference_model_name=torchsig_model
+      # - --iq_inference_squelch_db=-50
+      # - --iq_inference_model_server=torchserve:8080
+      # - --iq_inference_model_name=torchsig_model
       # - --write_samples=1000000000
-      - --sample_dir=/logs/samples
+      # - --sample_dir=/logs/samples
     healthcheck:
       test: [CMD, "/gamutrf/bin/scanhc.sh", "9000"]
       interval: 10s
@@ -116,7 +95,7 @@ services:
       retries: 3
   waterfall:
     restart: always
-    image: iqtlabs/gamutrf-waterfall:latest
+    image: anarkiwi/gamutrf-waterfall:latest
     networks:
       - gamutrf
     ports:
@@ -127,8 +106,8 @@ services:
       - gamutrf-waterfall
       - --api_endpoint=gamutrf:9001
       - --scanners=gamutrf:10000
-      - --inference_server=gamutrf
-      - --inference_port=10001
+      # - --inference_server=gamutrf
+      # - --inference_port=10001
       - --save_path=/logs/waterfall
       - --port=9003
       - --detection_type=narrowband
