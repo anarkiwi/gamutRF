@@ -1,4 +1,4 @@
-FROM iqtlabs/gamutrf:latest
+FROM anarkiwi/gamutrf:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="${PATH}:/root/.local/bin"

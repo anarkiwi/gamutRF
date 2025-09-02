@@ -1,5 +1,5 @@
 FROM ubuntu:24.04 AS gr-iqtlabs-builder
-COPY --from=iqtlabs/gnuradio:3.10.11.0 /usr/local /usr/local
+COPY --from=anarkiwi/gnuradio:3.10.11.0 /usr/local /usr/local
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential \
@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libvulkan-dev \
   pybind11-dev
 WORKDIR /root
-RUN git clone https://github.com/iqtlabs/gr-iqtlabs -b 1.0.122
-COPY --from=iqtlabs/gamutrf-vkfft:latest /root /root/gr-iqtlabs
-WORKDIR /root/gr-iqtlabs/build
-COPY --from=iqtlabs/gamutrf-sigmf:latest /usr/local /usr/local
+RUN git clone https://github.com/anarkiwi/gr-iqtlabs -b 1.0.0
+COPY --from=anarkiwi/gamutrf-vkfft:latest /root /root/gr-iqtlabs
+WORKDIR /root/gr-anarkiwi/build
+COPY --from=anarkiwi/gamutrf-sigmf:latest /usr/local /usr/local
 RUN cmake .. && make -j "$(nproc)" && make install && find /usr/local -name \*.a -delete
 
 FROM ubuntu:24.04
@@ -37,8 +37,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libvulkan1 \
     python3 \
     && apt-get -y -q clean && rm -rf /var/lib/apt/lists/*
-COPY --from=iqtlabs/gnuradio:3.10.11.0 /usr/local /usr/local
-COPY --from=iqtlabs/gamutrf-driver /usr/local /usr/local
+COPY --from=anarkiwi/gnuradio:3.10.11.0 /usr/local /usr/local
+COPY --from=anarkiwi/gamutrf-driver /usr/local /usr/local
 COPY --from=gr-iqtlabs-builder /usr/local /usr/local
 RUN ldconfig -v
 RUN python3 -c "from gnuradio import soapy, iqtlabs ; from gnuradio.iqtlabs import vkfft"

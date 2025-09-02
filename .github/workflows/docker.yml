@@ -8,10 +8,12 @@ on:
 jobs:
   buildx-base:
     runs-on: ubuntu-latest
+    environment:
+      name: "release"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
-        fetch-depth: 0
+	fetch-depth: 0
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
@@ -21,68 +23,68 @@ jobs:
     - name: Set up qemu
       uses: docker/setup-qemu-action@v3
       with:
-        platforms: all
+	platforms: all
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v3
     - name: Docker Login
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
       run: |
-        echo "${DOCKER_PASSWORD}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	docker login --username "${{ secrets.DOCKER_USERNAME }}" --password "${{ secrets.DOCKER_TOKEN }}"
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms vkfft
       uses: docker/build-push-action@v6
       with:
-        context: .
-        file: docker/Dockerfile.vkfft
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: iqtlabs/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	context: .
+	file: docker/Dockerfile.vkfft
+	platforms: linux/amd64,linux/arm64
+	push: true
+	tags: anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms sigmf
       uses: docker/build-push-action@v6
       with:
-        context: .
-        file: docker/Dockerfile.sigmf
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: iqtlabs/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	context: .
+	file: docker/Dockerfile.sigmf
+	platforms: linux/amd64,linux/arm64
+	push: true
+	tags: anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms driver
       uses: docker/build-push-action@v6
       with:
-        context: docker
-        file: docker/Dockerfile.driver
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: iqtlabs/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	context: docker
+	file: docker/Dockerfile.driver
+	platforms: linux/amd64,linux/arm64
+	push: true
+	tags: anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms base
       uses: docker/build-push-action@v6
       with:
-        context: docker
-        file: docker/Dockerfile.base
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: iqtlabs/gamutrf-base:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	context: docker
+	file: docker/Dockerfile.base
+	platforms: linux/amd64,linux/arm64
+	push: true
+	tags: anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms waterfall
       uses: docker/build-push-action@v6
       with:
-        context: .
-        file: docker/Dockerfile.waterfall
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: iqtlabs/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	context: .
+	file: docker/Dockerfile.waterfall
+	platforms: linux/amd64,linux/arm64
+	push: true
+	tags: anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-gamutrf:
     needs: [buildx-base]
     runs-on: ubuntu-latest
+    environment:
+      name: "release"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
-        fetch-depth: 0
+	fetch-depth: 0
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
@@ -92,21 +94,19 @@ jobs:
     - name: Set up qemu
       uses: docker/setup-qemu-action@v3
       with:
-        platforms: all
+	platforms: all
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v3
     - name: Docker Login
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
       run: |
-        echo "${DOCKER_PASSWORD}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	docker login --username "${{ secrets.DOCKER_USERNAME }}" --password "${{ secrets.DOCKER_TOKEN }}"
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms
       uses: docker/build-push-action@v6
       with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: iqtlabs/gamutrf:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'iqtlabs/gamutrf' && github.event_name == 'push'
+	context: .
+	platforms: linux/amd64,linux/arm64
+	push: true
+	tags: anarkiwi/gamutrf:${{ steps.change_version.outputs.VERSION }}
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'

@@ -4,41 +4,41 @@ jobs:
   test-gamutrf-extra-images:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: docker build
       run: |
         cd docker
-        docker build -f Dockerfile.airspyfm . -t iqtlabs/gamutrf-airspyfm:latest
+        docker build -f Dockerfile.airspyfm . -t anarkiwi/gamutrf-airspyfm:latest
   test-gamutrf-mavlink-api:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: docker build
       run: |
-        docker build -f utils/mavlink-api/Dockerfile.mavlink-api utils/mavlink-api -t iqtlabs/gamutrf-mavlink-api:latest
+        docker build -f utils/mavlink-api/Dockerfile.mavlink-api utils/mavlink-api -t anarkiwi/gamutrf-mavlink-api:latest
   test-gamutrf-waterfall-images:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: docker build
       run: |
-        docker build -f docker/Dockerfile.waterfall . -t iqtlabs/gamutrf-waterfall:latest
-        docker run -t iqtlabs/gamutrf-waterfall:latest gamutrf-waterfall --help
+        docker build -f docker/Dockerfile.waterfall . -t anarkiwi/gamutrf-waterfall:latest
+        docker run -t anarkiwi/gamutrf-waterfall:latest gamutrf-waterfall --help
   test-gamutrf-images:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: docker build
       run: |
-        docker build -f docker/Dockerfile.vkfft . -t iqtlabs/gamutrf-vkfft:latest
-        docker build -f docker/Dockerfile.sigmf docker -t iqtlabs/gamutrf-sigmf:latest
-        docker build -f docker/Dockerfile.driver docker -t iqtlabs/gamutrf-driver:latest
-        docker build -f docker/Dockerfile.base docker -t iqtlabs/gamutrf-base:latest
-        docker rmi -f iqtlabs/gamutrf-vkfft:latest iqtlabs/gamutrf-driver:latest
-        docker build -f Dockerfile . -t iqtlabs/gamutrf:latest
-        docker run -t iqtlabs/gamutrf:latest gamutrf-compress_dirs --help
-        docker run -t iqtlabs/gamutrf:latest gamutrf-offline --help
-        docker run -t iqtlabs/gamutrf:latest gamutrf-scan --help
+        docker build -f docker/Dockerfile.vkfft . -t anarkiwi/gamutrf-vkfft:latest
+        docker build -f docker/Dockerfile.sigmf docker -t anarkiwi/gamutrf-sigmf:latest
+        docker build -f docker/Dockerfile.driver docker -t anarkiwi/gamutrf-driver:latest
+        docker build -f docker/Dockerfile.base docker -t anarkiwi/gamutrf-base:latest
+        docker rmi -f anarkiwi/gamutrf-vkfft:latest anarkiwi/gamutrf-driver:latest
+        docker build -f Dockerfile . -t anarkiwi/gamutrf:latest
+        docker run -t anarkiwi/gamutrf:latest gamutrf-compress_dirs --help
+        docker run -t anarkiwi/gamutrf:latest gamutrf-offline --help
+        docker run -t anarkiwi/gamutrf:latest gamutrf-scan --help
     - name: offline consistency
       # VkFFT is more consistent, but still not perfectly consistent.
       run: |

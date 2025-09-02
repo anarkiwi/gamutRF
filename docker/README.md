@@ -15,4 +15,3 @@ Docker compose
 - specgram.yml - 
 - prometheus.yml - 
 - monitoring.yml - 
-- freespacer.yml -

@@ -23,5 +23,5 @@ COPY --from=vkfft-builder /root/VkFFT /root/VkFFT
 CMD ["/root/VkFFT/build/VkFFT_TestSuite", "-devices"]
 
 # Test that GPU can be accessed by VkFFT:
-# $ docker run --gpus all --device /dev/dri/renderD128:/dev/dri/renderD128 -ti iqtlabs/gamutrf-vkfft
+# $ docker run --gpus all --device /dev/dri/renderD128:/dev/dri/renderD128 -ti anarkiwi/gamutrf-vkfft
 # Device id: 0 name: NVIDIA GeForce RTX 4070 Ti API:1.3.260
