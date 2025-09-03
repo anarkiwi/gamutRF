@@ -24,7 +24,7 @@ services:
       - SYS_RAWIO
     devices:
       - /dev/bus/usb:/dev/bus/usb
-      - /dev/dri/renderD128:/dev/dri/renderD128
+    # - /dev/dri/renderD128:/dev/dri/renderD128
     # nvidia container toolkit etc must be installed.
     # Comment out "deploy" if on non-x86 platform (e.g. Pi4)
     # deploy:
