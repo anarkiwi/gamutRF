@@ -2,12 +2,12 @@
 FROM python:3.11-slim
 
 WORKDIR /app
-ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
 RUN pip3 install poetry==1.1.5
+RUN pip3 install setuptools==68.0.0
 COPY pyproject.toml .
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+RUN poetry install
 
 COPY mavlink-api.py .
 
