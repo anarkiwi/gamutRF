@@ -34,7 +34,7 @@ def publish_data(client, target_name, data):
     topic = f"{MQTT_TOPIC}"
     try:
         rc = client.publish(topic, data)
-        print(f"Published data to {topic}: {data}")
+        # print(f"Published data to {topic}: {data}")
 
     except ConnectionError as err:
         print("could not publish data: %s", err)
