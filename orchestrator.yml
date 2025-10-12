@@ -10,7 +10,7 @@ networks:
 services:
   gamutrf:
     restart: always
-    image: anarkiwi/gamutrf:latest
+    image: anarkiwi/gamutrf:v1.0.2
     networks:
       - gamutrf
     ports:
@@ -94,7 +94,7 @@ services:
       retries: 3
   waterfall:
     restart: always
-    image: anarkiwi/gamutrf-waterfall:latest
+    image: anarkiwi/gamutrf-waterfall:v1.0.2
     networks:
       - gamutrf
     ports:
