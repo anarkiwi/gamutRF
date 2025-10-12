@@ -1,11 +1,10 @@
 ---
-version: "3.3"
 networks:
   gamutrf:
 services:
   torchserve:
     restart: always
-    image: anarkiwi/cuda-torchserve:v0.0.8
+    image: anarkiwi/cuda-torchserve:v0.0.2
     healthcheck:
       start_period: 120s
     networks:
@@ -29,4 +28,5 @@ services:
       # As of torchserve v11, you will need to add setuptools==69.5.1
       # to your requirements.txt when generating a MAR file
       # https://github.com/pytorch/serve/issues/3176
-      - --models torchsig_model=torchsig_model.mar
+      - --disable-token-auth
+      - --models model=model.mar
