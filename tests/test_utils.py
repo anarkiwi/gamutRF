@@ -39,6 +39,20 @@ class UtilsTestCase(unittest.TestCase):
         )
         self.assertEqual(
             {
+                "timestamp": 1,
+                "filename": "gamutrf_recording_ettus__gain40_1_10000000Hz_1024000sps.s16",
+                "nfft": None,
+                "center_frequency": 10000000,
+                "sample_rate": 1024000,
+                "sample_dtype": np.dtype([('i', '<i2'), ('q', '<i2')]),
+                "sample_len": 4,
+                "sample_type": "signed-integer",
+                "sample_bits": 16,
+            },
+            parse_filename("gamutrf_recording_ettus__gain40_1_10000000Hz_1024000sps.s16"),
+        )
+        self.assertEqual(
+            {
                 "filename": "gamutrf_recording1645540092_140000000Hz_20000000sps.ci16_%s.gz"
                 % endianstr(),
                 "nfft": None,
