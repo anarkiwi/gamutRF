@@ -131,7 +131,7 @@ class GrscanTestCase(unittest.TestCase):
                 freq_end = 0
                 sdr_file = os.path.join(
                     tempdir,
-                    f"gamutrf_recording1_{int(freq_start)}Hz_{int(samp_rate)}sps.raw",
+                    f"gamutrf_recording1_{int(freq_start)}Hz_{int(samp_rate)}sps.sigmf-data",
                 )
                 subprocess.check_call(
                     [

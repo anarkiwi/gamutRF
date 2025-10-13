@@ -5,7 +5,7 @@ set -e
 TMPDIR=/tmp/offline
 sudo rm -rf $TMPDIR
 mkdir -p $TMPDIR
-TESTFILE=gamutrf_recording_ettus__gain40_1_10000000Hz_1024000sps.raw
+TESTFILE=gamutrf_recording_ettus__gain40_1_10000000Hz_1024000sps.sigmf-data
 mkdir "$TMPDIR/input"
 export FULLTMP=$TMPDIR/input/$TESTFILE
 python -c "import numpy as np ; (np.random.uniform(0, 1, 10240000) + 1.j * np.random.uniform(0, 1, 10240000)).astype(np.complex64).tofile(\"$FULLTMP\")"
@@ -22,9 +22,9 @@ run_offline ref
 
 # the throttle block may not emit all the input samples, so compare just the output
 sudo zstd -d $TMPDIR/samples/samples*zst
-OUTSIZE=$(stat -c%s $TMPDIR/samples/samples*raw)
+OUTSIZE=$(stat -c%s $TMPDIR/samples/samples*sigmf-data)
 echo truncating to $OUTSIZE
 sudo truncate --size=$OUTSIZE $FULLTMP
-diff -b $TMPDIR/samples/samples*.raw $FULLTMP
+diff -b $TMPDIR/samples/samples*.sigmf-data $FULLTMP
 sudo rm -rf $TMPDIR/
 echo OK
