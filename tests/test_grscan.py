@@ -151,6 +151,7 @@ class GrscanTestCase(unittest.TestCase):
                     samp_rate=samp_rate,
                     tune_step_fft=512,
                     write_samples=write_samples,
+                    write_samples_compressed=True,
                     sample_dir=tempdir,
                     iqtlabs=iqtlabs,
                     wavelearner=wavelearner,
