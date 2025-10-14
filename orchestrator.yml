@@ -88,6 +88,7 @@ services:
       # 20.48e6*300 = 6144000000
       # - --write_samples=6144000000
       # - --sample_dir=/logs/samples
+      - --no-write_samples_compressed
     healthcheck:
       test: [CMD, "/gamutrf/bin/scanhc.sh", "9000"]
       interval: 10s
