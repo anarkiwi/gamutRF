@@ -121,6 +121,13 @@ def argument_parser():
         help="if > 0, write FFT points/raw samples to --sample_dir",
     )
     parser.add_argument(
+        "--write_samples_compressed",
+        dest="write_samples_compressed",
+        default=True,
+        action=BooleanOptionalAction,
+        help="write samples compressed",
+    )
+    parser.add_argument(
         "--write_fft_points",
         dest="write_fft_points",
         default=False,

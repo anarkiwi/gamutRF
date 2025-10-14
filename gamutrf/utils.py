@@ -19,7 +19,9 @@ SCAN_FROLL = 1e6
 # UHD_IMAGES_DIR=/usr/share/uhd/images ./examples/rx_samples_to_file --args num_recv_frames=1000,recv_frame_size=16360 --file test.gz --nsamps 200000000 --rate 20000000 --freq 101e6 --spb 20000000
 ETTUS_ARGS = "num_recv_frames=1000,recv_frame_size=16360,type=b200"
 ETTUS_ANT = "TX/RX"
-SAMPLE_FILENAME_RE = re.compile(r"^.+\D(\d+)_(\d+)Hz.*\D(\d+)sps\.c*([fisu]\d+|raw).*$")
+SAMPLE_FILENAME_RE = re.compile(
+    r"^.+\D(\d+)_(\d+)Hz.*\D(\d+)sps\.c*([fisu]\d+|raw|sigmf-data).*$"
+)
 
 SAMPLE_DTYPES = {
     "i8": ("<i1", "signed-integer"),
@@ -33,6 +35,7 @@ SAMPLE_DTYPES = {
     "u32": ("<u4", "unsigned-integer"),
     "f32": ("<u4", "unsigned-integer"),
     "raw": ("<f4", "float"),
+    "sigmf-data": ("<f4", "float"),
 }
 SAMP_RATE = 8.192e6
 MIN_FREQ = 2.3e9

@@ -102,6 +102,7 @@ class grscan(gr.top_block):
         wavelearner=None,
         write_fft_points=False,
         write_samples=0,
+        write_samples_compressed=False,
     ):
         gr.top_block.__init__(self, "scan", catch_exceptions=True)
 
@@ -276,7 +277,7 @@ class grscan(gr.top_block):
                         rotate_secs,
                         igain,
                         sigmf,
-                        zstd=True,
+                        zstd=write_samples_compressed,
                         rotate=False,
                         description=description,
                     ),
@@ -377,7 +378,7 @@ class grscan(gr.top_block):
                                 iq_inference_squelch_alpha,
                                 0,
                                 False,
-                            )
+                            ),
                         ],
                         fft_batch_size,
                         nfft,
