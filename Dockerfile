@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y -q \
     python3-pip && \
     curl -sSL https://install.python-poetry.org | python3 - --version "$(jq -r .constraints.poetry /root/renovate.json)" && \
     poetry config virtualenvs.create false
-COPY --from=iqtlabs/gamutrf-base:latest /usr/local /usr/local
+COPY --from=anarkiwi/gamutrf-base:latest /usr/local /usr/local
 WORKDIR /gamutrf
 COPY poetry.lock pyproject.toml README.md /gamutrf/
 # dependency install is cached for faster rebuild, if only gamutrf source changed.
