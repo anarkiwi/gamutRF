@@ -82,10 +82,11 @@ services:
       # - --n_image=7
       # - --inference_model_server=torchserve:8080
       # - --inference_model_name=model
-      - --iq_inference_squelch_db=-33
-      # - --iq_inference_model_server=torchserve:8080
+      - --iq_inference_squelch_db=-50
+      #- --iq_inference_model_server=defroster:8080
       - --iq_inference_model_name=model
-      # - --write_samples=1000000000
+      # 20.48e6*300 = 6144000000
+      # - --write_samples=6144000000
       # - --sample_dir=/logs/samples
     healthcheck:
       test: [CMD, "/gamutrf/bin/scanhc.sh", "9000"]
