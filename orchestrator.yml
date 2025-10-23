@@ -92,8 +92,10 @@ services:
       - --iq_inference_model_name=model
       # 20.48e6*300 = 6144000000
       # 20.48e6*60  = 1228800000
+      # 20.48e6*120 = 2457600000
       #- --write_samples=6144000000
-      - --write_samples=1228800000
+      #- --write_samples=1228800000
+      - --write_samples=2457600000
       - --sample_dir=/logs/samples
       - --no-write_samples_compressed
     healthcheck:
