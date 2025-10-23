@@ -65,6 +65,7 @@ class grscan(gr.top_block):
         inference_port=10001,
         inference_text_color="",
         iq_inference_background=True,
+        iq_inference_dc_guard=0,
         iq_inference_model_name="",
         iq_inference_model_server="",
         iq_inference_squelch_db=None,
@@ -345,6 +346,7 @@ class grscan(gr.top_block):
                 power_inference=iq_power_inference,
                 background=iq_inference_background,
                 batch=inference_batch,
+                dc_guard=iq_inference_dc_guard,
             )
             self.inference_blocks.append(self.iq_inference_block)
             if self.write_samples_block:
