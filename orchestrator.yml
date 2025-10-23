@@ -56,13 +56,14 @@ services:
       - --tuning_ranges=460e6-480e6,5.1e9-5.8e9
       #- --tuning_ranges=5.1e9-5.8e9
       - --tuneoverlap=0.85
-      - --skip-tune-step=128
+      - --skip-tune-step=96
       - --samp-rate=20.48e6
       - --nfft=1024
       - --tune-dwell-ms=0
-      - --tune-step-fft=512
+      - --tune-step-fft=384
       - --db_clamp_floor=-150
       - --fft_batch_size=256
+      #- --dc_block_len=1024
       # - --mqtt_server=mqtt
       - --no-compass
       - --peak_fft_range=45
@@ -80,18 +81,19 @@ services:
       - --inference_addr=0.0.0.0
       - --inference_port=10001
       # - --inference_min_confidence=0.25
-      - --inference_min_db=-80
+      - --inference_min_db=-200
       # - --inference_text_color=black
       #- --n_inference=2
       # - --n_image=7
       # - --inference_model_server=torchserve:8080
       # - --inference_model_name=model
-      - --iq_inference_squelch_db=-50
+      - --iq_inference_squelch_db=-40
       - --iq_inference_model_server=defroster:8080
       - --iq_inference_model_name=model
       # 20.48e6*300 = 6144000000
+      # 20.48e6*60  = 1228800000
       #- --write_samples=6144000000
-      #- --write_samples=122880000
+      - --write_samples=1228800000
       - --sample_dir=/logs/samples
       - --no-write_samples_compressed
     healthcheck:
