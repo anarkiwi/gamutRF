@@ -272,7 +272,7 @@ class grscan(gr.top_block):
                         sample_dir,
                         "samples",
                         int(write_samples / samples_vlen),
-                        skip_tune_step,
+                        0, # skip_tune_step,
                         int(samp_rate),
                         rotate_secs,
                         igain,
@@ -552,6 +552,7 @@ class grscan(gr.top_block):
             )
             dc_blocks.append(grfilter.dc_blocker_cc(dc_block_len, dc_block_long))
         if dc_blocks:
+            return dc_blocks
             return self.wrap_batch(
                 dc_blocks,
                 fft_batch_size,
