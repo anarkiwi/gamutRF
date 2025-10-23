@@ -337,6 +337,13 @@ def argument_parser():
         help="if True do I/Q inference in the background",
     )
     parser.add_argument(
+        "--iq_inference_dc_guard",
+        dest="iq_inference_dc_guard",
+        default=0.1,
+        type=float,
+        help="if > 0, don't trigger inference with max power near DC",
+    )
+    parser.add_argument(
         "--iq_inference_squelch_db",
         dest="iq_inference_squelch_db",
         type=float,
