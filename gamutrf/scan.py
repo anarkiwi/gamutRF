@@ -344,6 +344,13 @@ def argument_parser():
         help="if > 0, don't trigger inference with max power near DC",
     )
     parser.add_argument(
+        "--iq_inference_retune_guard",
+        dest="iq_inference_retune_guard",
+        type=int,
+        default=16,
+        help="if not 0, don't trigger inference near retune",
+    )
+    parser.add_argument(
         "--iq_inference_squelch_db",
         dest="iq_inference_squelch_db",
         type=float,
