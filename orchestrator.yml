@@ -10,7 +10,7 @@ networks:
 services:
   gamutrf:
     restart: always
-    image: anarkiwi/gamutrf:v1.0.6
+    image: anarkiwi/gamutrf:local
     networks:
       - gamutrf
     ports:
@@ -51,12 +51,12 @@ services:
       - --fft_zmq_addr=0.0.0.0
       - --fft_zmq_port=10000
       - --igain=40
-      - '--freq-start=${FREQ_START}'
-      - '--freq-end=${FREQ_END}'
-      - --tuning_ranges=460e6-480e6,5.1e9-5.8e9
+      #- '--freq-start=5.180e9'
+      #- '--freq-end=0'
       #- --tuning_ranges=5.1e9-5.8e9
-      - --tuneoverlap=0.85
-      - --skip-tune-step=96
+      - --tuning_ranges=470e6-480e6,5.16e9-5.17e9,5.18e9-5.19e9,5.725e9-5.825e9
+      - --tuneoverlap=1
+      - --skip-tune-step=128
       - --samp-rate=20.48e6
       - --nfft=1024
       - --tune-dwell-ms=0
@@ -95,7 +95,7 @@ services:
       # 20.48e6*120 = 2457600000
       #- --write_samples=6144000000
       #- --write_samples=1228800000
-      - --write_samples=2457600000
+      #- --write_samples=2457600000
       - --sample_dir=/logs/samples
       - --no-write_samples_compressed
     healthcheck:

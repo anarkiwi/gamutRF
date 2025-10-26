@@ -347,6 +347,7 @@ class grscan(gr.top_block):
                 background=iq_inference_background,
                 batch=inference_batch,
                 dc_guard=iq_inference_dc_guard,
+                retune_guard=8,
             )
             self.inference_blocks.append(self.iq_inference_block)
             if self.write_samples_block:
@@ -554,7 +555,6 @@ class grscan(gr.top_block):
             )
             dc_blocks.append(grfilter.dc_blocker_cc(dc_block_len, dc_block_long))
         if dc_blocks:
-            return dc_blocks
             return self.wrap_batch(
                 dc_blocks,
                 fft_batch_size,
