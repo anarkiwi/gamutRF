@@ -68,6 +68,7 @@ class grscan(gr.top_block):
         iq_inference_dc_guard=0,
         iq_inference_model_name="",
         iq_inference_model_server="",
+        iq_inference_retune_guard=0,
         iq_inference_squelch_db=None,
         iq_inference_squelch_alpha=1e-4,
         iq_power_inference=False,
@@ -347,7 +348,7 @@ class grscan(gr.top_block):
                 background=iq_inference_background,
                 batch=inference_batch,
                 dc_guard=iq_inference_dc_guard,
-                retune_guard=8,
+                retune_guard=iq_inference_retune_guard,
             )
             self.inference_blocks.append(self.iq_inference_block)
             if self.write_samples_block:
