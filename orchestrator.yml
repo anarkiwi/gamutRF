@@ -10,7 +10,7 @@ networks:
 services:
   gamutrf:
     restart: always
-    image: anarkiwi/gamutrf:local
+    image: anarkiwi/gamutrf:v1.0.7
     networks:
       - gamutrf
     ports:
@@ -43,7 +43,7 @@ services:
     # cause FFT wisdom to be cached.
     environment:
       - 'HOME=/logs'
-    user: "1000:1000"
+    #user: "1000:1000"
     command:
       - gamutrf-scan
       - --iq_zmq_addr=0.0.0.0
@@ -106,7 +106,7 @@ services:
       retries: 3
   waterfall:
     restart: always
-    image: anarkiwi/gamutrf-waterfall:v1.0.6
+    image: anarkiwi/gamutrf-waterfall:v1.0.7
     networks:
       - gamutrf
     ports:
