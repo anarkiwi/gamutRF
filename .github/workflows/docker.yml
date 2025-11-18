@@ -7,6 +7,9 @@ on:
 
 jobs:
   buildx-base:
+    strategy:
+      matrix:
+        platform: ["linux/amd64", "linux/arm64"]
     runs-on: ubuntu-latest
     environment:
       name: "release"
@@ -38,7 +41,7 @@ jobs:
       with:
         context: .
         file: docker/Dockerfile.vkfft
-        platforms: linux/amd64
+        platforms: ${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
@@ -47,7 +50,7 @@ jobs:
       with:
         context: .
         file: docker/Dockerfile.sigmf
-        platforms: linux/amd64
+        platforms: ${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
@@ -56,7 +59,7 @@ jobs:
       with:
         context: docker
         file: docker/Dockerfile.driver
-        platforms: linux/amd64
+        platforms: ${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
@@ -65,7 +68,7 @@ jobs:
       with:
         context: docker
         file: docker/Dockerfile.base
-        platforms: linux/amd64
+        platforms: ${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
@@ -74,12 +77,15 @@ jobs:
       with:
         context: .
         file: docker/Dockerfile.waterfall
-        platforms: linux/amd64
+        platforms: ${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-gamutrf:
     needs: [buildx-base]
+    strategy:
+      matrix:
+        platform: ["linux/amd64", "linux/arm64"]
     runs-on: ubuntu-latest
     environment:
       name: "release"
@@ -110,7 +116,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        platforms: linux/amd64
+        platforms: ${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
