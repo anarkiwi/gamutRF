@@ -9,7 +9,7 @@ jobs:
   buildx-base:
     strategy:
       matrix:
-        platform: ["linux/amd64", "linux/arm64"]
+        platform: ["amd64", "arm64"]
     runs-on: ubuntu-latest
     environment:
       name: "release"
@@ -41,42 +41,39 @@ jobs:
       with:
         context: .
         file: docker/Dockerfile.vkfft
-        platforms: ${{ matrix.platform }}
+        platforms: linux/${{ matrix.platform }}
         push: true
-        tags: anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}
+        tags: anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms sigmf
       uses: docker/build-push-action@v6
       with:
         context: .
         file: docker/Dockerfile.sigmf
-        platforms: ${{ matrix.platform }}
+        platforms: linux/${{ matrix.platform }}
         push: true
-        tags: anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}
+        tags: anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms driver
       uses: docker/build-push-action@v6
       with:
         context: docker
         file: docker/Dockerfile.driver
-        platforms: ${{ matrix.platform }}
+        platforms: linux/${{ matrix.platform }}
         push: true
-        tags: anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}
+        tags: anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms base
       uses: docker/build-push-action@v6
       with:
         context: docker
         file: docker/Dockerfile.base
-        platforms: ${{ matrix.platform }}
+        platforms: linux/${{ matrix.platform }}
         push: true
-        tags: anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}
+        tags: anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-gamutrf:
     needs: [buildx-base]
-    strategy:
-      matrix:
-        platform: ["linux/amd64", "linux/arm64"]
     runs-on: ubuntu-latest
     environment:
       name: "release"
@@ -103,11 +100,15 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
+    - name: manifest workaround
+      run: for dep in vkfft sigmf driver base ; do \
+        depname=anarkiwi/gamutrf-${dep}:{{ steps.change_version.outputs.VERSION }} \
+        docker buildx imagetools create -t ${depname} ${depname}-arm64 ${depname}-amd64 ; done
     - name: Build and push platforms
       uses: docker/build-push-action@v6
       with:
         context: .
-        platforms: ${{ matrix.platform }}
+        platforms: linux/arm64,linux/amd64
         push: true
         tags: anarkiwi/gamutrf:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
