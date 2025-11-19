@@ -72,15 +72,6 @@ jobs:
         push: true
         tags: anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
-    - name: Build and push platforms waterfall
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        file: docker/Dockerfile.waterfall
-        platforms: ${{ matrix.platform }}
-        push: true
-        tags: anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}
-      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-gamutrf:
     needs: [buildx-base]
     strategy:
