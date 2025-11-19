@@ -10,9 +10,10 @@ jobs:
     strategy:
       matrix:
         platform: ["amd64", "arm64"]
+        builder: ["ubuntu-latest", "ubuntu-arm64-2404"]
         include:
           - platform: "amd64"
-            builder: ubuntu-latest
+            builder: "ubuntu-latest"
           - platform: "arm64"
             builder: "ubuntu-arm64-2404"
     runs-on: ${{ matrix.builder }}
