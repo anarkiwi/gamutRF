@@ -102,18 +102,18 @@ jobs:
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: manifest workaround
       run: |
-        docker buildx imagetools create -t anarkiwi/gamutrf-vkfft:{{ steps.change_version.outputs.VERSION }} \
-	anarkiwi/gamutrf-vkfft:{{ steps.change_version.outputs.VERSION }}-arm64 \
-	anarkiwi/gamutrf-vkfft:{{ steps.change_version.outputs.VERSION }}-amd64 && \
+        docker buildx imagetools create -t anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }} \
+	anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-arm64 \
+	anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-amd64 && \
         docker buildx imagetools create -t anarkiwi/gamutrf-sigmf:{{ steps.change_version.outputs.VERSION }} \
-	anarkiwi/gamutrf-sigmf:{{ steps.change_version.outputs.VERSION }}-arm64 \
-	anarkiwi/gamutrf-sigmf:{{ steps.change_version.outputs.VERSION }}-amd64 && \
+	anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-arm64 \
+	anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-amd64 && \
         docker buildx imagetools create -t anarkiwi/gamutrf-driver:{{ steps.change_version.outputs.VERSION }} \
-	anarkiwi/gamutrf-driver:{{ steps.change_version.outputs.VERSION }}-arm64 \
-	anarkiwi/gamutrf-driver:{{ steps.change_version.outputs.VERSION }}-amd64 && \
+	anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-arm64 \
+	anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-amd64 && \
         docker buildx imagetools create -t anarkiwi/gamutrf-base:{{ steps.change_version.outputs.VERSION }} \
-	anarkiwi/gamutrf-base:{{ steps.change_version.outputs.VERSION }}-arm64 \
-	anarkiwi/gamutrf-base:{{ steps.change_version.outputs.VERSION }}-amd64
+	anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-arm64 \
+	anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms
       uses: docker/build-push-action@v6
