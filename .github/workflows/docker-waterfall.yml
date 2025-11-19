@@ -11,11 +11,11 @@ jobs:
       matrix:
         platform: ["amd64", "arm64"]
         builder: ["ubuntu-latest", "ubuntu-arm64-2404"]
-        include:
+        exclude:
           - platform: "amd64"
-            builder: "ubuntu-latest"
-          - platform: "arm64"
             builder: "ubuntu-arm64-2404"
+          - platform: "arm64"
+            builder: "ubuntu-latest"
     runs-on: ${{ matrix.builder }}
     environment:
       name: "release"
