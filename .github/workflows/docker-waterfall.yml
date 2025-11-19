@@ -41,15 +41,14 @@ jobs:
       with:
         context: .
         file: docker/Dockerfile.waterfall
-        platforms: ${{ matrix.platform }}
+        platforms: linux/${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Create SHA manifest and push
       run: |
-        docker buildx imagetools create -t anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }} \
-          anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}-arm64 \
-          anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}-amd64
+        depname=anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }} \
+        docker buildx imagetools create -t ${depname} ${depname}-arm64 ${depname}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   waterfall:
     needs: [waterfall-base]
