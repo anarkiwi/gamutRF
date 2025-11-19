@@ -6,10 +6,11 @@ on:
     tags: 'v*'
 
 jobs:
-  buildx-base:
+  buildx-dep:
     strategy:
       matrix:
         platform: ["amd64", "arm64"]
+        dep: ["vkfft", "sigmf", "driver"]
     runs-on: ubuntu-latest
     environment:
       name: "release"
@@ -36,32 +37,85 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
-    - name: Build and push platforms vkfft
+    - name: Build and push platforms ${{ matrix.dep }}
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: docker/Dockerfile.vkfft
+        file: docker/Dockerfile.${{ matrix.dep }}
         platforms: linux/${{ matrix.platform }}
         push: true
-        tags: anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
+        tags: anarkiwi/gamutrf-${{ matrix.dep }}:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
-    - name: Build and push platforms sigmf
-      uses: docker/build-push-action@v6
+  buildx-dep-manifest:
+    needs: [buildx-dep]
+    runson: ubuntu-latest
+    environment:
+      name: "release"
+    steps:
+    - uses: actions/checkout@v5
       with:
-        context: .
-        file: docker/Dockerfile.sigmf
-        platforms: linux/${{ matrix.platform }}
-        push: true
-        tags: anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
+        fetch-depth: 0
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+    - name: Change for main
+      id: change_version
+      run: if [ "${{ steps.get_version.outputs.VERSION }}" == "main" ]; then echo ::set-output name=VERSION::latest; else echo ::set-output name=VERSION::${{ steps.get_version.outputs.VERSION }}; fi
+    - name: Set up qemu
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
-    - name: Build and push platforms driver
-      uses: docker/build-push-action@v6
+    - name: manifest workaround
+      run: |
+        docker buildx imagetools create -t anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }} \
+        anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-arm64 \
+        anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-amd64 && \
+        docker buildx imagetools create -t anarkiwi/gamutrf-sigmf:{{ steps.change_version.outputs.VERSION }} \
+        anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-arm64 \
+        anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-amd64 && \
+        docker buildx imagetools create -t anarkiwi/gamutrf-driver:{{ steps.change_version.outputs.VERSION }} \
+        anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-arm64 \
+        anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-amd64 && \
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
+  buildx-base:
+    needs: [buildx-dep-manifest]
+    runson: ubuntu-latest
+    strategy:
+      matrix:
+        platform: ["amd64", "arm64"]
+    environment:
+      name: "release"
+    steps:
+    - uses: actions/checkout@v5
       with:
-        context: docker
-        file: docker/Dockerfile.driver
-        platforms: linux/${{ matrix.platform }}
-        push: true
-        tags: anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
+        fetch-depth: 0
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+    - name: Change for main
+      id: change_version
+      run: if [ "${{ steps.get_version.outputs.VERSION }}" == "main" ]; then echo ::set-output name=VERSION::latest; else echo ::set-output name=VERSION::${{ steps.get_version.outputs.VERSION }}; fi
+    - name: Set up qemu
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms base
       uses: docker/build-push-action@v6
@@ -102,16 +156,6 @@ jobs:
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: manifest workaround
       run: |
-        docker buildx imagetools create -t anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }} \
-        anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-arm64 \
-        anarkiwi/gamutrf-vkfft:${{ steps.change_version.outputs.VERSION }}-amd64 && \
-        docker buildx imagetools create -t anarkiwi/gamutrf-sigmf:{{ steps.change_version.outputs.VERSION }} \
-        anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-arm64 \
-        anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-amd64 && \
-        docker buildx imagetools create -t anarkiwi/gamutrf-driver:{{ steps.change_version.outputs.VERSION }} \
-        anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-arm64 \
-        anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-amd64 && \
-        docker buildx imagetools create -t anarkiwi/gamutrf-base:{{ steps.change_version.outputs.VERSION }} \
         anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-arm64 \
         anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
