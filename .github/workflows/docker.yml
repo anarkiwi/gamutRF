@@ -90,7 +90,7 @@ jobs:
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-base:
     needs: [buildx-dep-manifest]
-    runson: ubuntu-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         platform: ["amd64", "arm64"]
