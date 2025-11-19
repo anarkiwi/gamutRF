@@ -11,7 +11,13 @@ jobs:
       matrix:
         platform: ["amd64", "arm64"]
         dep: ["vkfft", "sigmf", "driver"]
-    runs-on: ubuntu-latest
+        platform: ["amd64", "arm64"]
+        include:
+          - platform: "amd64"
+            builder: ubuntu-latest
+          - platform: "arm64"
+            builder: "ubuntu-arm64-2404"
+    runs-on: ${{ matrix.builder }}
     environment:
       name: "release"
     steps:
@@ -90,10 +96,15 @@ jobs:
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-base:
     needs: [buildx-dep-manifest]
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         platform: ["amd64", "arm64"]
+        include:
+          - platform: "amd64"
+            builder: ubuntu-latest
+          - platform: "arm64"
+            builder: "ubuntu-arm64-2404"
+    runs-on: ${{ matrix.builder }}
     environment:
       name: "release"
     steps:
