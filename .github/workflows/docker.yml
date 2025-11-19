@@ -44,11 +44,13 @@ jobs:
         file: docker/Dockerfile.${{ matrix.dep }}
         platforms: linux/${{ matrix.platform }}
         push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         tags: anarkiwi/gamutrf-${{ matrix.dep }}:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-dep-manifest:
     needs: [buildx-dep]
-    runson: ubuntu-latest
+    runs-on: ubuntu-latest
     environment:
       name: "release"
     steps:
@@ -125,6 +127,8 @@ jobs:
         platforms: linux/${{ matrix.platform }}
         push: true
         tags: anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-gamutrf:
     needs: [buildx-base]
@@ -165,5 +169,7 @@ jobs:
         context: .
         platforms: linux/arm64,linux/amd64
         push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         tags: anarkiwi/gamutrf:${{ steps.change_version.outputs.VERSION }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
