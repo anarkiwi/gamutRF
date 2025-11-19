@@ -160,6 +160,7 @@ jobs:
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: manifest workaround
       run: |
+        docker buildx imagetools create -t anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }} \
         anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-arm64 \
         anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
