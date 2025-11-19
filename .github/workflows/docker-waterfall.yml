@@ -43,7 +43,7 @@ jobs:
         file: docker/Dockerfile.waterfall
         platforms: linux/${{ matrix.platform }}
         push: true
-        tags: anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}
+        tags: anarkiwi/gamutrf-waterfall:${{ steps.change_version.outputs.VERSION }}-${{ matrix.platform }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   waterfall:
     needs: [waterfall-base]
