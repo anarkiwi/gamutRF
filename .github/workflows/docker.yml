@@ -104,6 +104,7 @@ jobs:
       run: for dep in vkfft sigmf driver base ; do \
         depname=anarkiwi/gamutrf-${dep}:{{ steps.change_version.outputs.VERSION }} \
         docker buildx imagetools create -t ${depname} ${depname}-arm64 ${depname}-amd64 ; done
+      if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms
       uses: docker/build-push-action@v6
       with:
