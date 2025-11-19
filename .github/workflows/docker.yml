@@ -86,7 +86,7 @@ jobs:
         anarkiwi/gamutrf-sigmf:${{ steps.change_version.outputs.VERSION }}-amd64 && \
         docker buildx imagetools create -t anarkiwi/gamutrf-driver:{{ steps.change_version.outputs.VERSION }} \
         anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-arm64 \
-        anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-amd64 && \
+        anarkiwi/gamutrf-driver:${{ steps.change_version.outputs.VERSION }}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
   buildx-base:
     needs: [buildx-dep-manifest]
