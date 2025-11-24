@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /root
 RUN git clone https://github.com/DTolm/VkFFT -b v1.3.4
 WORKDIR /root/VkFFT/build
-RUN CMAKE_BUILD_TYPE=Release cmake -DGLSLANG_GIT_TAG=13.0.0 .. && make -j "$(nproc)"
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DGLSLANG_GIT_TAG=13.0.0 .. && make -j "$(nproc)"
 
 FROM ubuntu:24.04
 # TODO: ideally, should be packaged such that cmake can find it.
