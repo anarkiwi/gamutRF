@@ -1,4 +1,5 @@
 FROM ubuntu:24.04 AS gr-iqtlabs-builder
+ARG MARCH=-march=native
 COPY --from=anarkiwi/gnuradio:v3.10.12.0 /usr/local /usr/local
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,7 +19,7 @@ RUN git clone https://github.com/anarkiwi/gr-iqtlabs -b 1.0.6
 COPY --from=anarkiwi/gamutrf-vkfft:latest /root /root/gr-iqtlabs
 WORKDIR /root/gr-iqtlabs/build
 COPY --from=anarkiwi/gamutrf-sigmf:latest /usr/local /usr/local
-RUN cmake .. && make -j "$(nproc)" && make install && find /usr/local -name \*.a -delete
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${MARCH}" .. && make -j "$(nproc)" && make install && find /usr/local -name \*.a -delete
 
 FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
