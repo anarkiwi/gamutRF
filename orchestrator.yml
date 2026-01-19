@@ -10,7 +10,7 @@ networks:
 services:
   gamutrf:
     restart: always
-    image: anarkiwi/gamutrf:v1.0.7
+    image: anarkiwi/gamutrf:v1.0.11
     networks:
       - gamutrf
     ports:
@@ -54,8 +54,7 @@ services:
       #- '--freq-start=5.180e9'
       #- '--freq-end=0'
       #- --tuning_ranges=5.1e9-5.8e9
-      - --tuning_ranges=470e6-480e6,5.16e9-5.17e9,5.18e9-5.19e9,5.725e9-5.824e9
-      # ,5.725e9-5.825e9
+      - --tuning_ranges=2.4e9-2.5e9
       - --tuneoverlap=1
       - --skip-tune-step=128
       - --samp-rate=20.48e6
@@ -79,8 +78,8 @@ services:
       # - --external_gps_server_port=8888
       # - --inference_text_color=black
       # - --inference_output_dir=/logs/inference
-      - --inference_addr=0.0.0.0
-      - --inference_port=10001
+      #- --inference_addr=0.0.0.0
+      #- --inference_port=10001
       # - --inference_min_confidence=0.25
       - --inference_min_db=-200
       # - --inference_text_color=black
@@ -89,7 +88,7 @@ services:
       # - --inference_model_server=torchserve:8080
       # - --inference_model_name=model
       - --iq_inference_squelch_db=-40
-      - --iq_inference_model_server=defroster:8080
+      - --iq_inference_model_server=orinnano:8080
       - --iq_inference_model_name=model
       # 20.48e6*300 = 6144000000
       # 20.48e6*60  = 1228800000
@@ -106,7 +105,7 @@ services:
       retries: 3
   waterfall:
     restart: always
-    image: anarkiwi/gamutrf-waterfall:v1.0.7
+    image: anarkiwi/gamutrf-waterfall:v1.0.11
     networks:
       - gamutrf
     ports:
