@@ -4,7 +4,10 @@ networks:
 services:
   torchserve:
     restart: always
-    image: anarkiwi/torchserve:v0.0.4
+    image: anarkiwi/orin-torchserve:v0.0.4
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
     healthcheck:
       start_period: 120s
     networks:
@@ -15,8 +18,16 @@ services:
     volumes:
       - '${VOL_PREFIX}/model_store:/model_store'
       - '/root/.cache/pip:/root/.cache/pip'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     command:
-      # --models torchsig_model=torchsig_model.mar
+      # can be multiple models
+      # e.g. mini2_snr=mini2_snr.mar,another_mini2_snr=another_mini2_snr.mar
       # As of torchserve v11, you will need to add setuptools==69.5.1
       # to your requirements.txt when generating a MAR file
       # https://github.com/pytorch/serve/issues/3176
