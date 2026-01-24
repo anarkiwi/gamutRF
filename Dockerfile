@@ -47,7 +47,7 @@ RUN mkdir -p /data/gamutrf
 # install nvidia's vulkan support if x86.
 # hadolint ignore=DL3008
 RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
-    add-apt-repository ppa:ettusresearch/uhd -y \
+    add-apt-repository ppa:ettusresearch/uhd -y && \
     apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         libblas3 \
