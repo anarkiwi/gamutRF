@@ -47,14 +47,13 @@ RUN mkdir -p /data/gamutrf
 # install nvidia's vulkan support if x86.
 # hadolint ignore=DL3008
 RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
-    apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:ettusresearch/uhd -y && \
     apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         libblas3 \
+        libboost-chrono1.83.0t64 \
         libboost-iostreams1.83.0 \
         libboost-program-options1.83.0 \
+        libboost-serialization1.83.0 \
         libboost-thread1.83.0 \
         libev4 \
         libfftw3-bin \
@@ -66,25 +65,24 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
         libopencv-imgproc406t64 \
         librtlsdr2 \
         libspdlog1.12 \
-        libuhd4.6.0 \
         libunwind8 \
         libvulkan1 \
         libzmq5 \
         mesa-vulkan-drivers \
-        python3 \
+        python3-dev \
         python3-pytest \
         python3-zmq \
-        uhd-host \
         wget \
         zstd && \
     apt-get -y -q clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /
-COPY --from=anarkiwi/gnuradio:v3.10.12.0 /usr/share/uhd/images /usr/share/uhd/images
 COPY --from=installer /usr/local /usr/local
 COPY --from=installer /gamutrf /gamutrf
-COPY tests /tests
 COPY --from=installer /root/.local /root/.local
 RUN ldconfig -v
+# https://learn.ni.com/learn/article/getting-started-with-usrp-b206mini-i-and-py-on-linux-ubuntu
+RUN uhd_images_downloader -t "b2|usb" && uhd_images_downloader -t fw -t b2xx && uhd_images_downloader -t b206
+COPY tests /tests
 RUN pytest tests
 WORKDIR /gamutrf
 RUN echo "$(find /gamutrf/gamutrf -type f -name \*py -print)"|xargs grep -Eh "^(import|from)\s"|grep -Ev "gamutrf"|sort|uniq|python3
