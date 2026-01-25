@@ -80,9 +80,8 @@ WORKDIR /
 COPY --from=installer /usr/local /usr/local
 COPY --from=installer /gamutrf /gamutrf
 COPY --from=installer /root/.local /root/.local
+COPY --from=anarkiwi/gamutrf-driver:v1.0.2 /usr/share/uhd/images /usr/share/uhd/images
 RUN ldconfig -v
-# https://learn.ni.com/learn/article/getting-started-with-usrp-b206mini-i-and-py-on-linux-ubuntu
-RUN uhd_images_downloader -t "b2|usb" && uhd_images_downloader -t fw -t b2xx && uhd_images_downloader -t b206
 COPY tests /tests
 RUN pytest tests
 WORKDIR /gamutrf
