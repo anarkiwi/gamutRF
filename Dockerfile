@@ -64,13 +64,13 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
         libopencv-core406t64 \
         libopencv-imgcodecs406t64 \
         libopencv-imgproc406t64 \
+        libpython3-stdlib \
         librtlsdr2 \
         libspdlog1.12 \
         libunwind8 \
         libvulkan1 \
         libzmq5 \
         mesa-vulkan-drivers \
-        python3-dev \
         python3-pytest \
         python3-zmq \
         wget \
