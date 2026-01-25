@@ -12,33 +12,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libfftw3-dev \
   libgmp-dev \
   liblimesuite-dev \
-  libncurses-dev \
   libusb-1.0-0-dev \
   librtlsdr-dev \
-  libusb-1.0-0-dev \
   libusb-dev \
   pkg-config \
   python3-dev \
-  python3-mako \
-  python3-numpy \
-  python3-requests \
-  python3-ruamel.yaml \
-  python3-setuptools \
   unzip \
   wget
 WORKDIR /root
 RUN wget https://signalhound.com/sigdownloads/SDK/signal_hound_sdk_10_07_25.zip -Osdk.zip && unzip sdk.zip && rm sdk.zip
-RUN git clone https://github.com/SignalHound/soapy-bb60
-RUN git clone https://github.com/pothosware/SoapyBladeRF -b soapy-bladerf-0.4.1
-RUN git clone https://github.com/pothosware/SoapyRTLSDR -b soapy-rtl-sdr-0.3.3
-RUN git clone https://github.com/Nuand/bladeRF.git -b 2023.02
-RUN git clone https://github.com/anarkiwi/lime-tools -b samples
-RUN git clone https://github.com/EttusResearch/uhd -b v4.9.0.1
-RUN git clone https://github.com/pothosware/SoapyUHD && cd SoapyUHD && git checkout 2a5d381f68fd05d5b3c0e7db56c36892ea99b4ae && cd ..
-WORKDIR /root/uhd/host/build
-RUN cmake .. && make -j $(nproc) install
-WORKDIR /root/SoapyUHD/build
-RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${MARCH}" .. && make -j "$(nproc)" && make install
+RUN git clone --depth 1 https://github.com/SignalHound/soapy-bb60
+RUN git clone --depth 1 https://github.com/pothosware/SoapyBladeRF -b soapy-bladerf-0.4.1
+RUN git clone --depth 1 https://github.com/pothosware/SoapyRTLSDR -b soapy-rtl-sdr-0.3.3
+RUN git clone --depth 1 https://github.com/Nuand/bladeRF.git -b 2023.02
+RUN git clone --depth 1 https://github.com/anarkiwi/lime-tools -b samples
 WORKDIR /root/soapy-bb60/build
 RUN if [ "$(arch)" = "x86_64" ] ; then cp /root/signal_hound_sdk/device_apis/bb_series/include/* /usr/local/include/ && cp /root/signal_hound_sdk/device_apis/bb_series/lib/linux_x64/Ubuntu*18.04/* /usr/local/lib && ldconfig -v -n /usr/local/lib && ln -sf /usr/local/lib/libbb_api.so.5 /usr/local/lib/libbb_api.so && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${MARCH}" .. && make -j "$(nproc)" && make install ; fi
 WORKDIR /root/SoapyBladeRF/build
