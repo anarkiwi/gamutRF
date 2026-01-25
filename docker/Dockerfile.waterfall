@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y -q \
     poetry config virtualenvs.create false
 WORKDIR /root
 RUN wget -Ojquery.min.js https://code.jquery.com/jquery-3.7.1.min.js
-RUN wget -Obootstrap.zip https://github.com/twbs/bootstrap/releases/download/v5.3.3/bootstrap-5.3.3-dist.zip && \
+RUN wget -Obootstrap.zip https://github.com/twbs/bootstrap/releases/download/v5.3.8/bootstrap-5.3.8-dist.zip && \
   unzip bootstrap.zip && \
   cp bootstrap*dist/css/bootstrap.min.css /root && \
   rm bootstrap.zip
