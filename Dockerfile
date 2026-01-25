@@ -51,6 +51,7 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
         ca-certificates \
         libblas3 \
         libboost-chrono1.83.0t64 \
+        libboost-filesystem1.83.0 \
         libboost-iostreams1.83.0 \
         libboost-program-options1.83.0 \
         libboost-serialization1.83.0 \
