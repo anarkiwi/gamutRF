@@ -7,7 +7,6 @@ on:
 
 jobs:
   buildx-base:
-    needs: [buildx-dep-manifest]
     strategy:
       matrix:
         platform: ["amd64", "arm64"]
