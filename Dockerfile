@@ -27,10 +27,10 @@ COPY poetry.lock pyproject.toml README.md /gamutrf/
 RUN if [ "${POETRY_CACHE}" != "" ] ; then echo using cache "${POETRY_CACHE}" ; poetry source add --priority=default local "${POETRY_CACHE}" ; poetry lock ; fi
 # TODO: handle caching
 RUN for i in bjoern falcon-cors gpsd-py3 ; do poetry run pip install --no-cache-dir "$i"=="$(grep $i pyproject.toml | grep -Eo '\"[0-9\.]+' | sed 's/\"//g')" || exit 1 ; done
-RUN poetry install --no-interaction --no-ansi --no-dev --no-root
+RUN poetry install --no-interaction --no-ansi --only main --no-root
 COPY gamutrf gamutrf/
 COPY bin bin/
-RUN poetry install --no-interaction --no-ansi --no-dev
+RUN poetry install --no-interaction --no-ansi --only main
 
 # nosemgrep:github.workflows.config.dockerfile-source-not-pinned
 FROM ubuntu:24.04
@@ -64,7 +64,7 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
         libopencv-core406t64 \
         libopencv-imgcodecs406t64 \
         libopencv-imgproc406t64 \
-        libpython3-stdlib \
+        libpython3.12t64 \
         librtlsdr2 \
         libspdlog1.12 \
         libunwind8 \
