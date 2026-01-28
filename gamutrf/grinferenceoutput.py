@@ -94,7 +94,7 @@ class inferenceoutput(gr.basic_block):
                 return
         except KeyError:
             pass
-        self.publish_pdu(item) 
+        self.publish_pdu(item)
 
     def publish_pdu(self, item, event_type="detect"):
         self.serialno += 1
