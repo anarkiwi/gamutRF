@@ -156,7 +156,7 @@ class MQTTReporter:
 
     def publish(self, publish_path, publish_args, event_type="detect"):
         with self.publish_lock:
-            self.serial_no += 1
+            self.serialno += 1
             if not self.mqtt_server:
                 return
             try:

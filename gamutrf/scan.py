@@ -558,7 +558,7 @@ def argument_parser():
         "--nest",
         dest="nest",
         default="",
-        type="",
+        type=str,
         help="nest format (hostname)",
     )
     return parser
