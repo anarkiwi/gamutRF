@@ -151,6 +151,8 @@ class MQTTReporter:
                 ConnectionRefusedError,
                 socket.error,
             ) as err:
+                gpsd.gpsd_socket = None
+                gpsd.gpsd_stream = None
                 logging.error("could not update with GPS: %s", err)
         return publish_args
 

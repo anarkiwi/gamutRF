@@ -76,7 +76,9 @@ class inferenceoutput(gr.basic_block):
 
     def nest_hb(self):
         while self.running:
-            self.publish_pdu({}, event_type="heartbeat")
+            self.publish_pdu(
+                {"metadata": {"ts": str(time.time())}}, event_type="heartbeat"
+            )
             time.sleep(5)
 
     def stop(self):
@@ -94,6 +96,7 @@ class inferenceoutput(gr.basic_block):
                 return
         except KeyError:
             pass
+        self.publish_pdu(item)
 
     def publish_pdu(self, item, event_type="detect"):
         self.serialno += 1
