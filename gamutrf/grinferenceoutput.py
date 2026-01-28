@@ -3,6 +3,7 @@
 import json
 import logging
 import sys
+import threading
 import time
 import pmt
 import zmq
@@ -67,23 +68,38 @@ class inferenceoutput(gr.basic_block):
             )
         self.message_port_register_in(pmt.intern("inference"))
         self.set_msg_handler(pmt.intern("inference"), self.receive_pdu)
+        self.nest_thread = None
+        self.running = True
+        if nest:
+            self.nest_thread = threading.Thread(target=self.nest_hb)
+            self.nest_thread.start()
+
+    def nest_hb(self):
+        while self.running:
+            self.publish_pdu({}, event_type="heartbeat")
+            time.sleep(5)
 
     def stop(self):
+        self.running = False
         if self.zmq_pub is not None:
             self.zmq_pub.close()
+        if self.nest_thread:
+            self.nest_thread.join()
 
     def receive_pdu(self, pdu):
         item = json.loads(bytes(pmt.to_python(pmt.cdr(pdu))).decode("utf8"))
-        self.serialno += 1
         try:
             predictions = set(item["predictions"].keys())
             if NO_SIGNAL in predictions:
                 return
         except KeyError:
             pass
+
+    def publish_pdu(self, item, event_type="detect"):
+        self.serialno += 1
         logging.info("inference output %u: %s", self.serialno, item)
-        if self.zmq_pub is not None:
+        if self.zmq_pub is not None and item:
             self.zmq_pub.send_string(json.dumps(item), flags=zmq.NOBLOCK)
         if self.mqtt_reporter is not None:
-            self.mqtt_reporter.publish("gamutrf/inference", item)
+            self.mqtt_reporter.publish("gamutrf/inference", item, event_type=event_type)
             self.mqtt_reporter.log(self.log_path, "inference", self.start_time, item)
