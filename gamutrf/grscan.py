@@ -105,7 +105,7 @@ class grscan(gr.top_block):
         write_fft_points=False,
         write_samples=0,
         write_samples_compressed=False,
-        nest=False,
+        nest="",
     ):
         gr.top_block.__init__(self, "scan", catch_exceptions=True)
 

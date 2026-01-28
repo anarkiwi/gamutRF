@@ -557,9 +557,9 @@ def argument_parser():
     parser.add_argument(
         "--nest",
         dest="nest",
-        default=True,
-        action=BooleanOptionalAction,
-        help="nest format",
+        default="",
+        type="",
+        help="nest format (hostname)",
     )
     return parser
 

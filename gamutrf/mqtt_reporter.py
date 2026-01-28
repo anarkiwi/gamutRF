@@ -37,6 +37,7 @@ class MQTTReporter:
         self.gps_configured = True
         self.nest = nest
         self.publish_lock = threading.Lock()
+        self.serialno = 0
         if not self.gps_server and not self.external_gps_server:
             logging.error("mqtt enabled, no gps_server or external_gps_server found")
             self.gps_configured = False
@@ -155,6 +156,7 @@ class MQTTReporter:
 
     def publish(self, publish_path, publish_args, event_type="detect"):
         with self.publish_lock:
+            self.serial_no += 1
             if not self.mqtt_server:
                 return
             try:
@@ -169,7 +171,7 @@ class MQTTReporter:
                     predictions = orig.get("predictions", {})
                     publish_args = {
                         "schema_version": 1,
-                        "sensor_id": self.name,
+                        "sensor_id": self.nest,
                         "event_type": event_type,
                         "metadata": {
                             k: metadata[k]
@@ -181,7 +183,6 @@ class MQTTReporter:
                                 "sample_clock",
                                 "sample_count",
                                 "sample_rate",
-                                "serial",
                                 "stddev_pwr",
                                 "ts",
                             ]
@@ -189,6 +190,7 @@ class MQTTReporter:
                         },
                         "predictions": [predictions],
                     }
+                    publish_args["metadata"]["serial"] = self.serialno
                     if position:
                         publish_args["metadata"].update(
                             {"location": {"position": position}}
