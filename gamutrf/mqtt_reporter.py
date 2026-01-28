@@ -188,7 +188,7 @@ class MQTTReporter:
                             ]
                             if k in metadata
                         },
-                        "predictions": [predictions],
+                        "predictions": [p for p in predictions if p],
                     }
                     publish_args["metadata"]["serial"] = self.serialno
                     if position:
