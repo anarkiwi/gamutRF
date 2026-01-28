@@ -27,10 +27,10 @@ COPY poetry.lock pyproject.toml README.md /gamutrf/
 RUN if [ "${POETRY_CACHE}" != "" ] ; then echo using cache "${POETRY_CACHE}" ; poetry source add --priority=default local "${POETRY_CACHE}" ; poetry lock ; fi
 # TODO: handle caching
 RUN for i in bjoern falcon-cors gpsd-py3 ; do poetry run pip install --no-cache-dir "$i"=="$(grep $i pyproject.toml | grep -Eo '\"[0-9\.]+' | sed 's/\"//g')" || exit 1 ; done
-RUN poetry install --no-interaction --no-ansi --no-dev --no-root
+RUN poetry install --no-interaction --no-ansi --only main --no-root
 COPY gamutrf gamutrf/
 COPY bin bin/
-RUN poetry install --no-interaction --no-ansi --no-dev
+RUN poetry install --no-interaction --no-ansi --only main
 
 # nosemgrep:github.workflows.config.dockerfile-source-not-pinned
 FROM ubuntu:24.04
@@ -50,8 +50,11 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
     apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         libblas3 \
+        libboost-chrono1.83.0t64 \
+        libboost-filesystem1.83.0 \
         libboost-iostreams1.83.0 \
         libboost-program-options1.83.0 \
+        libboost-serialization1.83.0 \
         libboost-thread1.83.0 \
         libev4 \
         libfftw3-bin \
@@ -61,27 +64,25 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
         libopencv-core406t64 \
         libopencv-imgcodecs406t64 \
         libopencv-imgproc406t64 \
+        libpython3.12t64 \
         librtlsdr2 \
         libspdlog1.12 \
-        libuhd4.6.0 \
         libunwind8 \
         libvulkan1 \
         libzmq5 \
         mesa-vulkan-drivers \
-        python3 \
         python3-pytest \
         python3-zmq \
-        uhd-host \
         wget \
         zstd && \
     apt-get -y -q clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /
-COPY --from=anarkiwi/gnuradio:v3.10.12.0 /usr/share/uhd/images /usr/share/uhd/images
 COPY --from=installer /usr/local /usr/local
 COPY --from=installer /gamutrf /gamutrf
-COPY tests /tests
 COPY --from=installer /root/.local /root/.local
+COPY --from=anarkiwi/gamutrf-driver:v1.0.2 /usr/share/uhd/images /usr/share/uhd/images
 RUN ldconfig -v
+COPY tests /tests
 RUN pytest tests
 WORKDIR /gamutrf
 RUN echo "$(find /gamutrf/gamutrf -type f -name \*py -print)"|xargs grep -Eh "^(import|from)\s"|grep -Ev "gamutrf"|sort|uniq|python3

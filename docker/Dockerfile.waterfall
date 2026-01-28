@@ -26,21 +26,21 @@ RUN apt-get update && apt-get install --no-install-recommends -y -q \
     poetry config virtualenvs.create false
 WORKDIR /root
 RUN wget -Ojquery.min.js https://code.jquery.com/jquery-3.7.1.min.js
-RUN wget -Obootstrap.zip https://github.com/twbs/bootstrap/releases/download/v5.3.3/bootstrap-5.3.3-dist.zip && \
+RUN wget -Obootstrap.zip https://github.com/twbs/bootstrap/releases/download/v5.3.8/bootstrap-5.3.8-dist.zip && \
   unzip bootstrap.zip && \
   cp bootstrap*dist/css/bootstrap.min.css /root && \
   rm bootstrap.zip
 WORKDIR /gamutrflib
 COPY gamutrflib /gamutrflib/
 RUN if [ "${POETRY_CACHE}" != "" ] ; then echo using cache "${POETRY_CACHE}" ; poetry source add --priority=default local "${POETRY_CACHE}" ; poetry lock ; fi
-RUN poetry install --no-interaction --no-ansi --no-dev
+RUN poetry install --no-interaction --no-ansi --only main
 WORKDIR /gamutrfwaterfall
 COPY gamutrfwaterfall /gamutrfwaterfall/
 # TODO: handle caching for pycairo
 RUN poetry run pip install --no-cache-dir pycairo=="$(grep pycairo pyproject.toml | grep -Eo '[0-9\.]+')"
 RUN if [ "${POETRY_CACHE}" != "" ] ; then echo using cache "${POETRY_CACHE}" ; poetry source add --priority=default local "${POETRY_CACHE}" ; poetry lock ; fi
 RUN apt-get purge -yq python3-packaging
-RUN poetry install --no-interaction --no-ansi --no-dev
+RUN poetry install --no-interaction --no-ansi --only main
 
 FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive

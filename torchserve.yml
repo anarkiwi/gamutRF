@@ -4,7 +4,7 @@ networks:
 services:
   torchserve:
     restart: always
-    image: anarkiwi/torchserve:v0.0.2
+    image: anarkiwi/torchserve:v0.0.4
     healthcheck:
       start_period: 120s
     networks:

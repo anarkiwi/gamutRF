@@ -1,6 +1,8 @@
 FROM ubuntu:24.04 AS gr-iqtlabs-builder
 ARG MARCH=-march=native
 COPY --from=anarkiwi/gnuradio:v3.10.12.0 /usr/local /usr/local
+COPY --from=anarkiwi/gamutrf-driver:v1.0.2 /usr/local /usr/local
+COPY --from=anarkiwi/gamutrf-sigmf:v1.0.2 /usr/local /usr/local
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential \
@@ -11,35 +13,33 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libgmp-dev \
   libopencv-dev \
   libspdlog-dev \
-  libuhd-dev \
   libvulkan-dev \
   pybind11-dev
 WORKDIR /root
-RUN git clone https://github.com/anarkiwi/gr-iqtlabs -b 1.0.6
-COPY --from=anarkiwi/gamutrf-vkfft:latest /root /root/gr-iqtlabs
+RUN git clone --depth 1 https://github.com/anarkiwi/gr-iqtlabs -b 1.0.8
+COPY --from=anarkiwi/gamutrf-vkfft:v1.0.2 /root /root/gr-iqtlabs
 WORKDIR /root/gr-iqtlabs/build
-COPY --from=anarkiwi/gamutrf-sigmf:latest /usr/local /usr/local
 RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${MARCH}" .. && make -j "$(nproc)" && make install && find /usr/local -name \*.a -delete
 
 FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    libboost-chrono1.83.0t64 \
     libboost-filesystem1.83.0 \
     libboost-iostreams1.83.0 \
     libboost-program-options1.83.0 \
+    libboost-serialization1.83.0 \
     libboost-thread1.83.0 \
     libopencv-core406t64 \
     libopencv-imgcodecs406t64 \
     libopencv-imgproc406t64 \
     librtlsdr2 \
     libspdlog1.12 \
-    libuhd4.6.0 \
     libunwind8 \
     libvulkan1 \
-    python3 \
+    python3-dev \
     && apt-get -y -q clean && rm -rf /var/lib/apt/lists/*
 COPY --from=anarkiwi/gnuradio:v3.10.12.0 /usr/local /usr/local
-COPY --from=anarkiwi/gamutrf-driver /usr/local /usr/local
 COPY --from=gr-iqtlabs-builder /usr/local /usr/local
 RUN ldconfig -v
 RUN python3 -c "from gnuradio import soapy, iqtlabs ; from gnuradio.iqtlabs import vkfft"
