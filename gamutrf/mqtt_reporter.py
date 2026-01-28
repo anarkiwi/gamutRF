@@ -164,8 +164,8 @@ class MQTTReporter:
                 publish_args["name"] = self.name
                 if self.nest:
                     orig = publish_args
-                    metadata = orig["metadata"]
-                    position = orig["position"]
+                    metadata = orig.get("metadata", {})
+                    position = orig.get("position", {})
                     predictions = orig.get("predictions", {})
                     publish_args = {
                         "schema_version": 1,
@@ -189,17 +189,17 @@ class MQTTReporter:
                         },
                         "predictions": [predictions],
                     }
-                    publish_args["metadata"].update(
-                        {
-                            "location": {
-                                "position": position,
-                                "altitude": orig["altitude"],
-                                "gps_time": orig["gps_time"],
-                                "heading": orig["heading"],
-                                "gps": orig["gps"],
+                    if position:
+                        publish_args["metadata"].update(
+                            {"location": {"position": position}}
+                        )
+                        publish_args["metadata"]["location"].update(
+                            {
+                                k: orig[k]
+                                for k in ["altitude", "gps_time", "heading", "gps"]
+                                if k in orig
                             }
-                        }
-                    )
+                        )
                 self.mqttc.publish(publish_path, json.dumps(publish_args))
             except (
                 socket.gaierror,
