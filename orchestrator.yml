@@ -9,8 +9,6 @@ services:
       - '10000:10000'
       - '10001:10001'
       - '10002:10002'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
     cap_add:
       - SYS_NICE
       - SYS_RAWIO
@@ -56,8 +54,8 @@ services:
       - --db_clamp_floor=-150
       - --fft_batch_size=256
       #- --dc_block_len=1024
-      - --mqtt_server=aidev2
-      - --gps_server=host.docker.internal
+      - --mqtt_server=localhost
+      - --gps_server=localhost
       - --no-compass
       - --peak_fft_range=45
       # - --use_external_gps

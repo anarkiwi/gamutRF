@@ -9,8 +9,6 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
     healthcheck:
       start_period: 120s
-    networks:
-      - gamutrf
     ports:
       - '8080:8080'
       - '8081:8081'
