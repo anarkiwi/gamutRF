@@ -56,7 +56,7 @@ services:
       #- --dc_block_len=1024
       - --mqtt_server=localhost
       - --gps_server=localhost
-      - --nest="nano1"
+      - --nest=nano1
       - --no-compass
       - --peak_fft_range=45
       # - --use_external_gps
