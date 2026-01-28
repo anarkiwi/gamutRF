@@ -76,7 +76,7 @@ class inferenceoutput(gr.basic_block):
 
     def nest_hb(self):
         while self.running:
-            self.publish_pdu({}, event_type="heartbeat")
+            self.publish_pdu({"metadata": {"ts": time.time()}}, event_type="heartbeat")
             time.sleep(5)
 
     def stop(self):
