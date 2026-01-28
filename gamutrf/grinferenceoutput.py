@@ -33,6 +33,7 @@ class inferenceoutput(gr.basic_block):
         external_gps_server,
         external_gps_server_port,
         log_path,
+        nest,
     ):
         gr.basic_block.__init__(
             self,
@@ -62,6 +63,7 @@ class inferenceoutput(gr.basic_block):
                 use_external_heading=use_external_heading,
                 external_gps_server=external_gps_server,
                 external_gps_server_port=external_gps_server_port,
+                nest=nest,
             )
         self.message_port_register_in(pmt.intern("inference"))
         self.set_msg_handler(pmt.intern("inference"), self.receive_pdu)

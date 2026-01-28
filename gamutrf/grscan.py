@@ -105,6 +105,7 @@ class grscan(gr.top_block):
         write_fft_points=False,
         write_samples=0,
         write_samples_compressed=False,
+        nest=False,
     ):
         gr.top_block.__init__(self, "scan", catch_exceptions=True)
 
@@ -125,6 +126,7 @@ class grscan(gr.top_block):
         self.samp_rate = samp_rate
         self.retune_pre_fft = None
         self.tag_now = tag_now
+        self.nest = nest
 
         ##################################################
         # Blocks
@@ -372,6 +374,7 @@ class grscan(gr.top_block):
                 external_gps_server,
                 external_gps_server_port,
                 inference_output_dir,
+                self.nest,
             )
             if self.iq_inference_block:
                 if iq_inference_squelch_db is not None:

@@ -554,6 +554,13 @@ def argument_parser():
         default=0,
         help="If > 0, find peak of FFT averages over this many rows",
     )
+    parser.add_argument(
+        "--nest",
+        dest="nest",
+        default=True,
+        action=BooleanOptionalAction,
+        help="nest format",
+    )
     return parser
 
 
