@@ -1,18 +1,9 @@
 ---
-networks:
-  gamutrf:
-    driver: bridge
-    driver_opts:
-      com.docker.network.driver.mtu: 9000
-  default:
-    external: true
-    name: none
 services:
   gamutrf:
     restart: always
     image: anarkiwi/gamutrf:v1.0.17
-    networks:
-      - gamutrf
+    network_mode: "host"
     ports:
       - '9001:9001'
       - '10000:10000'
@@ -108,8 +99,7 @@ services:
   waterfall:
     restart: always
     image: anarkiwi/gamutrf-waterfall:v1.0.17
-    networks:
-      - gamutrf
+    network_mode: "host"
     ports:
       - '9003:9003'
     volumes:
