@@ -44,7 +44,7 @@ services:
       - --igain=40
       #- '--freq-start=5.180e9'
       #- '--freq-end=0'
-      - --tuning_ranges=110e6-120e6,470e6-480e6,5.22e9-5.28e9,5.725e9-5.824e9
+      - --tuning_ranges=470e6-480e6,5.22e9-5.28e9,5.725e9-5.824e9
       - --tuneoverlap=1
       - --skip-tune-step=128
       - --samp-rate=20.48e6
