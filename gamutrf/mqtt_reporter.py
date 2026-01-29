@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import socket
+import threading
 
 import gpsd
 import paho.mqtt.client as mqtt
@@ -20,6 +21,7 @@ class MQTTReporter:
         use_external_heading=False,
         external_gps_server=None,
         external_gps_server_port=None,
+        nest=False,
     ):
         self.name = name
         self.mqtt_server = mqtt_server
@@ -33,6 +35,9 @@ class MQTTReporter:
         self.external_gps_server_port = external_gps_server_port
         self.external_gps_msg = None
         self.gps_configured = True
+        self.nest = nest
+        self.publish_lock = threading.Lock()
+        self.serialno = 0
         if not self.gps_server and not self.external_gps_server:
             logging.error("mqtt enabled, no gps_server or external_gps_server found")
             self.gps_configured = False
@@ -139,23 +144,75 @@ class MQTTReporter:
                         "gps": "fix",
                     }
                 )
-            except (BrokenPipeError, gpsd.NoFixError, AttributeError) as err:
+            except (
+                BrokenPipeError,
+                gpsd.NoFixError,
+                AttributeError,
+                ConnectionRefusedError,
+                socket.error,
+            ) as err:
+                gpsd.gpsd_socket = None
+                gpsd.gpsd_stream = None
                 logging.error("could not update with GPS: %s", err)
         return publish_args
 
-    def publish(self, publish_path, publish_args):
-        if not self.mqtt_server:
-            return
-        try:
-            if self.mqttc is None:
-                self.connect()
-            publish_args = self.add_gps(publish_args)
-            publish_args["name"] = self.name
-            self.mqttc.publish(publish_path, json.dumps(publish_args))
-        except (
-            socket.gaierror,
-            ConnectionRefusedError,
-            mqtt.WebsocketConnectionError,
-            ValueError,
-        ) as err:
-            logging.error(f"failed to publish to MQTT {self.mqtt_server}: {err}")
+    def publish(self, publish_path, publish_args, event_type="detect"):
+        with self.publish_lock:
+            self.serialno += 1
+            if not self.mqtt_server:
+                return
+            try:
+                if self.mqttc is None:
+                    self.connect()
+                publish_args = self.add_gps(publish_args)
+                publish_args["name"] = self.name
+                if self.nest:
+                    orig = publish_args
+                    metadata = orig.get("metadata", {})
+                    position = orig.get("position", {})
+                    predictions = orig.get("predictions", {})
+                    if predictions:
+                        predictions = [predictions]
+                    else:
+                        predictions = []
+                    publish_args = {
+                        "schema_version": 1,
+                        "sensor_id": self.nest,
+                        "event_type": event_type,
+                        "metadata": {
+                            k: metadata[k]
+                            for k in [
+                                "avg_pwr",
+                                "max_pwr",
+                                "rx_freq",
+                                "rx_freq_sample_clock",
+                                "sample_clock",
+                                "sample_count",
+                                "sample_rate",
+                                "stddev_pwr",
+                                "ts",
+                            ]
+                            if k in metadata
+                        },
+                        "predictions": predictions,
+                    }
+                    publish_args["metadata"]["serial"] = self.serialno
+                    if position:
+                        publish_args["metadata"].update(
+                            {"location": {"position": position}}
+                        )
+                        publish_args["metadata"]["location"].update(
+                            {
+                                k: orig[k]
+                                for k in ["altitude", "gps_time", "heading", "gps"]
+                                if k in orig
+                            }
+                        )
+                self.mqttc.publish(publish_path, json.dumps(publish_args))
+            except (
+                socket.gaierror,
+                ConnectionRefusedError,
+                mqtt.WebsocketConnectionError,
+                ValueError,
+            ) as err:
+                logging.error(f"failed to publish to MQTT {self.mqtt_server}: {err}")
