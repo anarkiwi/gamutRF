@@ -171,6 +171,10 @@ class MQTTReporter:
                     metadata = orig.get("metadata", {})
                     position = orig.get("position", {})
                     predictions = orig.get("predictions", {})
+                    if predictions:
+                        predictions = [predictions]
+                    else:
+                        predictions = []
                     publish_args = {
                         "schema_version": 1,
                         "sensor_id": self.nest,
@@ -190,7 +194,7 @@ class MQTTReporter:
                             ]
                             if k in metadata
                         },
-                        "predictions": [p for p in predictions if p],
+                        "predictions": predictions,
                     }
                     publish_args["metadata"]["serial"] = self.serialno
                     if position:
