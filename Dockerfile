@@ -71,8 +71,8 @@ RUN if [ "$(arch)" = "x86_64" ] ; then /root/install-nv.sh ; fi && \
         libvulkan1 \
         libzmq5 \
         mesa-vulkan-drivers \
-        python3-pytest \
         python3-zmq \
+        python3-pip \
         wget \
         zstd && \
     apt-get -y -q clean && rm -rf /var/lib/apt/lists/*
@@ -82,6 +82,7 @@ COPY --from=installer /gamutrf /gamutrf
 COPY --from=installer /root/.local /root/.local
 COPY --from=anarkiwi/gamutrf-driver:v1.0.2 /usr/share/uhd/images /usr/share/uhd/images
 RUN ldconfig -v
+RUN pip install -U pytest pytest-dependency
 COPY tests /tests
 RUN pytest tests
 WORKDIR /gamutrf
