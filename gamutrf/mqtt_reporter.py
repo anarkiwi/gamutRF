@@ -150,6 +150,7 @@ class MQTTReporter:
                 AttributeError,
                 ConnectionRefusedError,
                 socket.error,
+                UserWarning,
             ) as err:
                 gpsd.gpsd_socket = None
                 gpsd.gpsd_stream = None
