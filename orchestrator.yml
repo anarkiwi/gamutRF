@@ -2,7 +2,7 @@
 services:
   gamutrf:
     restart: always
-    image: anarkiwi/gamutrf:latest
+    image: anarkiwi/gamutrf:v1.0.20
     network_mode: "host"
     ports:
       - '9001:9001'
@@ -54,7 +54,7 @@ services:
       - --db_clamp_floor=-150
       - --fft_batch_size=256
       #- --dc_block_len=1024
-      - --mqtt_server=localhost
+      - --mqtt_server=aidev2
       - --gps_server=localhost
       - --nest=nano1
       - --no-compass
@@ -97,7 +97,7 @@ services:
       retries: 3
   waterfall:
     restart: always
-    image: anarkiwi/gamutrf-waterfall:v1.0.17
+    image: anarkiwi/gamutrf-waterfall:v1.0.20
     network_mode: "host"
     ports:
       - '9003:9003'
