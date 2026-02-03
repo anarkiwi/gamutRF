@@ -180,6 +180,7 @@ class MQTTReporter:
                             for k in [
                                 "avg_pwr",
                                 "max_pwr",
+                                "max_pwr_rx_freq",
                                 "rx_freq",
                                 "rx_freq_sample_clock",
                                 "sample_clock",
