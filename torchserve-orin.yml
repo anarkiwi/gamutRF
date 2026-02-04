@@ -3,6 +3,11 @@ services:
   torchserve:
     restart: always
     image: anarkiwi/orin-torchserve:v0.0.4
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sS localhost:8081/models|jq .models[0].modelName"]
+      interval: 10s
+      timeout: 5s
+      retries: 9999
     network_mode: "host"
     runtime: nvidia
     environment:
