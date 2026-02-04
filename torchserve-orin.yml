@@ -4,7 +4,7 @@ services:
     restart: always
     image: anarkiwi/orin-torchserve:v0.0.4
     healthcheck:
-      test: ["CMD-SHELL", "curl -sS localhost:8081/models|jq .models[0].modelName"|grep -q model]
+      test: ["CMD-SHELL", "curl -sS localhost:8081/models|jq .models[0].modelName|grep -q model"]
       interval: 15s
       timeout: 5s
       retries: 3
