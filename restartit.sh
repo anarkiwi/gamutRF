@@ -1,5 +1,6 @@
 #!/bin/sh
-sudo service gpsd restart
+set -e
+cd $(dirname $0)
 export VOL_PREFIX=/scratch/gamutrf 
 export NEST=$(hostname)
 docker compose -f orchestrator.yml -f torchserve-orin.yml down
