@@ -144,13 +144,9 @@ class MQTTReporter:
                         "gps": "fix",
                     }
                 )
-            except (
-                BrokenPipeError,
-                gpsd.NoFixError,
-                AttributeError,
-                ConnectionRefusedError,
-                socket.error,
-            ) as err:
+            except (UserWarning, gpsd.NoFixError) as err:
+                logging.error("could not update with GPS: %s", err)
+            except Exception as err:
                 gpsd.gpsd_socket = None
                 gpsd.gpsd_stream = None
                 logging.error("could not update with GPS: %s", err)
@@ -184,6 +180,7 @@ class MQTTReporter:
                             for k in [
                                 "avg_pwr",
                                 "max_pwr",
+                                "max_pwr_rx_freq",
                                 "rx_freq",
                                 "rx_freq_sample_clock",
                                 "sample_clock",
