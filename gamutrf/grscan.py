@@ -383,7 +383,7 @@ class grscan(gr.top_block):
                 external_gps_server_port,
                 inference_output_dir,
                 self.nest,
-                self.self.default_location,
+                self.default_location,
             )
             if self.iq_inference_block:
                 if iq_inference_squelch_db is not None:
