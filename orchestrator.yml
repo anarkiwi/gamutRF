@@ -2,7 +2,7 @@
 services:
   gamutrf:
     restart: always
-    image: anarkiwi/gamutrf:v1.0.22
+    image: anarkiwi/gamutrf:v1.0.23
     network_mode: "host"
     ports:
       - '9001:9001'
@@ -97,7 +97,7 @@ services:
       retries: 3
   waterfall:
     restart: always
-    image: anarkiwi/gamutrf-waterfall:v1.0.22
+    image: anarkiwi/gamutrf-waterfall:v1.0.23
     network_mode: "host"
     ports:
       - '9003:9003'
