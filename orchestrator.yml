@@ -56,7 +56,7 @@ services:
       #- --dc_block_len=1024
       - --mqtt_server=aidev2
       - --gps_server=localhost
-      - --nest="${NEST}"
+      - --nest=${NEST}
       - --no-compass
       - --peak_fft_range=45
       # - --use_external_gps
