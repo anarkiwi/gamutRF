@@ -22,6 +22,7 @@ class MQTTReporter:
         external_gps_server=None,
         external_gps_server_port=None,
         nest=False,
+        default_location=[0, 0, 0],
     ):
         self.name = name
         self.mqtt_server = mqtt_server
@@ -38,6 +39,7 @@ class MQTTReporter:
         self.nest = nest
         self.publish_lock = threading.Lock()
         self.serialno = 0
+        self.default_location = default_location
         if not self.gps_server and not self.external_gps_server:
             logging.error("mqtt enabled, no gps_server or external_gps_server found")
             self.gps_configured = False
@@ -90,10 +92,11 @@ class MQTTReporter:
     def add_gps(self, publish_args):
         if not self.gps_configured:
             return publish_args
+        x, y, z = self.default_location
         publish_args.update(
             {
-                "position": [0, 0],
-                "altitude": None,
+                "position": [x, y],
+                "altitude": z,
                 "gps_time": None,
                 "map_url": None,
                 "heading": self.heading,

@@ -106,6 +106,7 @@ class grscan(gr.top_block):
         write_samples=0,
         write_samples_compressed=False,
         nest="",
+        default_location="",
     ):
         gr.top_block.__init__(self, "scan", catch_exceptions=True)
 
@@ -127,6 +128,13 @@ class grscan(gr.top_block):
         self.retune_pre_fft = None
         self.tag_now = tag_now
         self.nest = nest
+        self.default_location = [0, 0, 0]
+        try:
+            self.default_location = [float(i) for i in default_location.split()]
+        except ValueError as err:
+            logging.error(
+                "could not parse default_location %s: %s", default_location, err
+            )
 
         ##################################################
         # Blocks
@@ -375,6 +383,7 @@ class grscan(gr.top_block):
                 external_gps_server_port,
                 inference_output_dir,
                 self.nest,
+                self.default_location,
             )
             if self.iq_inference_block:
                 if iq_inference_squelch_db is not None:
