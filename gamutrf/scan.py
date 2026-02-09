@@ -561,6 +561,13 @@ def argument_parser():
         type=str,
         help="nest format (hostname)",
     )
+    parser.add_argument(
+        "--default-location",
+        dest="default_location",
+        default="0,0,0",
+        type=str,
+        help="default GPS location",
+    )
     return parser
 
 
