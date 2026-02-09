@@ -57,7 +57,7 @@ services:
       - --mqtt_server=aidev2
       - --gps_server=localhost
       - --nest=${NEST}
-      - --default-location=-35.286172491964905,149.13722176447854,600
+      - --default-location=-35.286172491964905 149.13722176447854 600
       - --no-compass
       - --peak_fft_range=45
       # - --use_external_gps
