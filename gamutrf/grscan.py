@@ -131,10 +131,11 @@ class grscan(gr.top_block):
         self.nest = nest
         self.default_location = [0, 0, 0]
         try:
-            self.default_location = [
-                float(i) for i in re.split(r",|\s+", default_location)
-            ]
-        except ValueError as err:
+            default_location = [float(i) for i in re.split(r",|\s+", default_location)]
+            if not len(default_location) == 3:
+                raise ValueError("must be exactly 3 floats in location")
+            self.default_location = default_location
+        except Exception as err:
             logging.error(
                 "could not parse default_location %s: %s", default_location, err
             )
