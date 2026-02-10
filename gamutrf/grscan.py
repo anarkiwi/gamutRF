@@ -3,6 +3,7 @@
 import os
 import glob
 import logging
+import re
 import sys
 from pathlib import Path
 import pbr.version
@@ -130,7 +131,9 @@ class grscan(gr.top_block):
         self.nest = nest
         self.default_location = [0, 0, 0]
         try:
-            self.default_location = [float(i) for i in default_location.split()]
+            self.default_location = [
+                float(i) for i in re.split(r",|\s+", default_location)
+            ]
         except ValueError as err:
             logging.error(
                 "could not parse default_location %s: %s", default_location, err
