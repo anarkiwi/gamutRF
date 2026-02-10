@@ -139,6 +139,7 @@ class grscan(gr.top_block):
             logging.error(
                 "could not parse default_location %s: %s", default_location, err
             )
+        logging.info("using %s for default location", self.default_location)
 
         ##################################################
         # Blocks
