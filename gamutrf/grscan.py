@@ -3,7 +3,6 @@
 import os
 import glob
 import logging
-import re
 import sys
 from pathlib import Path
 import pbr.version
@@ -131,8 +130,10 @@ class grscan(gr.top_block):
         self.nest = nest
         self.default_location = [0, 0, 0]
         try:
-            default_location = [float(i) for i in re.split(r",|\s+", default_location)]
-            if not len(default_location) == 3:
+            default_location = [float(i) for i in default_location.split()]
+            if len(default_location) != 3:
+                default_location = [float(i) for i in default_location.split(",")]
+            if len(default_location) != 3:
                 raise ValueError("must be exactly 3 floats in location")
             self.default_location = default_location
         except Exception as err:
