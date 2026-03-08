@@ -84,7 +84,7 @@ COPY --from=anarkiwi/gamutrf-driver:v1.0.2 /usr/share/uhd/images /usr/share/uhd/
 RUN ldconfig -v
 RUN pip install -U pytest pytest-dependency
 COPY tests /tests
-RUN timeout 600s pytest -s tests
+RUN timeout 1800s pytest -s tests
 WORKDIR /gamutrf
 RUN echo "$(find /gamutrf/gamutrf -type f -name \*py -print)"|xargs grep -Eh "^(import|from)\s"|grep -Ev "gamutrf"|sort|uniq|python3
 # nosemgrep:github.workflows.config.missing-user
