@@ -107,6 +107,7 @@ class grscan(gr.top_block):
         write_samples_compressed=False,
         nest="",
         default_location="",
+        antenna_switch="",
     ):
         gr.top_block.__init__(self, "scan", catch_exceptions=True)
 
@@ -227,6 +228,7 @@ class grscan(gr.top_block):
             low_power_hold_down=(not pretune and low_power_hold_down),
             slew_rx_time=slew_rx_time,
             peak_fft_range=peak_fft_range,
+            antenna_switch=antenna_switch,
         )
         try:
             freq_start = self.retune_pre_fft.get_freq_start()
@@ -484,6 +486,7 @@ class grscan(gr.top_block):
                 tag_now=self.tag_now,
                 low_power_hold_down=low_power_hold_down,
                 slew_rx_time=slew_rx_time,
+                antenna_switch=antenna_switch,
             )
         else:
             # otherwise, the pretuning block will just do batching.
