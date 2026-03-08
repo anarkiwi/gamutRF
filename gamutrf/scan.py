@@ -568,6 +568,13 @@ def argument_parser():
         type=str,
         help="default GPS location",
     )
+    parser.add_argument(
+        "--antenna-switch",
+        dest="antenna_switch",
+        default="",
+        type=str,
+        help="antenna list to switch",
+    )
     return parser
 
 
