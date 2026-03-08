@@ -423,7 +423,9 @@ class grscan(gr.top_block):
 
         if pretune:
             self.msg_connect((self.retune_pre_fft, "tune"), (self.sources[0], cmd_port))
-            self.msg_connect((self.retune_pre_fft, "antenna"), (self.sources[0], cmd_port))
+            self.msg_connect(
+                (self.retune_pre_fft, "antenna"), (self.sources[0], cmd_port)
+            )
             self.msg_connect((self.retune_pre_fft, "tune"), (retune_fft, "cmd"))
         else:
             self.msg_connect((retune_fft, "tune"), (self.sources[0], cmd_port))
