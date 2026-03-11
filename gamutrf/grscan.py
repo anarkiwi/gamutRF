@@ -136,10 +136,11 @@ class grscan(gr.top_block):
                 if ch in default_location:
                     splitch = ch
                     break
-            location = [float(i) for i in default_location.split(splitch)]
-            if len(location) != 3:
-                raise ValueError(f"location {location} must be length 3")
-            self.default_location = location
+            if splitch is not None:
+                location = [float(i) for i in default_location.split(splitch)]
+                if len(location) != 3:
+                    raise ValueError(f"location {location} must be length 3")
+                self.default_location = location
         except Exception as err:
             logging.error(
                 "could not parse default_location %s: %s", default_location, err
