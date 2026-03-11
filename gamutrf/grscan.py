@@ -107,6 +107,7 @@ class grscan(gr.top_block):
         write_samples_compressed=False,
         nest="",
         default_location="",
+        antenna_switch="",
     ):
         gr.top_block.__init__(self, "scan", catch_exceptions=True)
 
@@ -196,6 +197,7 @@ class grscan(gr.top_block):
             fft_processor_affinity,
             low_power_hold_down,
             slew_rx_time,
+            antenna_switch,
         )
         self.fft_blocks = (
             self.get_dc_blocks(
@@ -236,6 +238,7 @@ class grscan(gr.top_block):
             low_power_hold_down=(not pretune and low_power_hold_down),
             slew_rx_time=slew_rx_time,
             peak_fft_range=peak_fft_range,
+            antenna_switch=antenna_switch,
         )
         try:
             freq_start = self.retune_pre_fft.get_freq_start()
@@ -429,9 +432,14 @@ class grscan(gr.top_block):
 
         if pretune:
             self.msg_connect((self.retune_pre_fft, "tune"), (self.sources[0], cmd_port))
+            self.msg_connect(
+                (self.retune_pre_fft, "antenna"), (self.sources[0], cmd_port)
+            )
             self.msg_connect((self.retune_pre_fft, "tune"), (retune_fft, "cmd"))
         else:
             self.msg_connect((retune_fft, "tune"), (self.sources[0], cmd_port))
+            self.msg_connect((retune_fft, "antenna"), (self.sources[0], cmd_port))
+
         self.msg_connect((retune_fft, "json"), (self.pduzmq_block, "json"))
         self.connect_blocks(self.sources[0], self.sources[1:])
 
@@ -475,6 +483,7 @@ class grscan(gr.top_block):
         pretune,
         low_power_hold_down,
         slew_rx_time,
+        antenna_switch,
     ):
         # if pretuning, the pretune block will also do the batching.
         if pretune:
@@ -493,6 +502,7 @@ class grscan(gr.top_block):
                 tag_now=self.tag_now,
                 low_power_hold_down=low_power_hold_down,
                 slew_rx_time=slew_rx_time,
+                antenna_switch=antenna_switch,
             )
         else:
             # otherwise, the pretuning block will just do batching.
@@ -601,6 +611,7 @@ class grscan(gr.top_block):
         fft_processor_affinity,
         low_power_hold_down,
         slew_rx_time,
+        antenna_switch,
     ):
         fft_batch_size, fft_blocks = self.get_offload_fft_blocks(
             vkfft,
@@ -622,6 +633,7 @@ class grscan(gr.top_block):
             pretune,
             low_power_hold_down,
             slew_rx_time,
+            antenna_switch,
         )
         return (fft_batch_size, [self.retune_pre_fft] + fft_blocks)
 
