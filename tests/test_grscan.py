@@ -160,6 +160,7 @@ class GrscanTestCase(unittest.TestCase):
                     pretune=pretune,
                     fft_batch_size=4,
                     inference_output_dir=str(tempdir),
+                    default_location="",
                 )
             except Exception as e:
                 print(e)
