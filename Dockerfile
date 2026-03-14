@@ -80,7 +80,7 @@ WORKDIR /
 COPY --from=installer /usr/local /usr/local
 COPY --from=installer /gamutrf /gamutrf
 COPY --from=installer /root/.local /root/.local
-COPY --from=anarkiwi/gamutrf-driver:v1.0.2 /usr/share/uhd/images /usr/share/uhd/images
+COPY --from=anarkiwi/gamutrf-driver:v1.0.15 /usr/share/uhd/images /usr/share/uhd/images
 RUN ldconfig -v
 RUN pip install -U pytest pytest-dependency
 COPY tests /tests
