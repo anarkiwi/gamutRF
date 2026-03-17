@@ -1299,13 +1299,13 @@ setuptools = "*"
 
 [[package]]
 name = "pdbpp"
-version = "0.11.7"
+version = "0.12.1"
 description = "pdb++, a drop-in replacement for pdb"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pdbpp-0.11.7-py3-none-any.whl", hash = "sha256:51916b63693898cf4881b36b4501c83947758d73f582f1f84893662b163bdb75"},
-    {file = "pdbpp-0.11.7.tar.gz", hash = "sha256:cb6604ac31a35ed0f2a29650a8c022b26284620be3e01cfd41b683b91da1ff14"},
+    {file = "pdbpp-0.12.1-py3-none-any.whl", hash = "sha256:3828809519439f468c9475c4c2cbb3899f2f5ba40e79c207d90eabe4c2373f5e"},
+    {file = "pdbpp-0.12.1.tar.gz", hash = "sha256:932cc5963760105e33607f44a1a3b83d28096d7dbf055b77b527c5c70a1dafef"},
 ]
 
 [package.dependencies]
@@ -1313,7 +1313,7 @@ fancycompleter = ">=0.11.0"
 pygments = "*"
 
 [package.extras]
-testing = ["ipython", "pexpect", "pytest", "pytest-cov"]
+testing = ["coverage (<7.11.1)", "ipython", "pexpect", "pytest", "pytest-cov"]
 
 [[package]]
 name = "platformdirs"
@@ -2376,4 +2376,4 @@ cffi = ["cffi (>=1.17,<2.0)", "cffi (>=2.0.0b)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "b0a9bbbc77ae7d675c226cc72b44542f8f7f69b9fe08c7b959372237b93a9c73"
+content-hash = "38d5930de65ffcf9a30b152c48bbd23790540e61eacc25d6aacf093e68ca22d0"
