@@ -34,7 +34,7 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: docker
         file: docker/Dockerfile.airspyfm
