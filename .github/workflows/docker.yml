@@ -46,7 +46,7 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms base
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: docker
         file: docker/Dockerfile.base
@@ -96,7 +96,7 @@ jobs:
         anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: .
         platforms: linux/arm64,linux/amd64
