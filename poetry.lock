@@ -2118,13 +2118,13 @@ type = ["importlib_metadata (>=7.0.2)", "jaraco.develop (>=7.21)", "mypy (==1.14
 
 [[package]]
 name = "sigmf"
-version = "1.7.1"
+version = "1.7.2"
 description = "Easily interact with Signal Metadata Format (SigMF) recordings."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "sigmf-1.7.1-py3-none-any.whl", hash = "sha256:707bf3d0b72d6ee0aae736f066f3583c9e188ac535e368ac595d09ed117d9589"},
-    {file = "sigmf-1.7.1.tar.gz", hash = "sha256:f045dcedc92461e3f0a7c637405c59a62ddc2d7c3ea65f5791c6175062db4345"},
+    {file = "sigmf-1.7.2-py3-none-any.whl", hash = "sha256:6599b95e8bd3ac2c568b8ec46c312a77b80868cbda79d729234f396d2194d3d8"},
+    {file = "sigmf-1.7.2.tar.gz", hash = "sha256:5f80f7127539358c7528ccf26e0ac5b3c268ecaeb69a921542e8ff71d0c85346"},
 ]
 
 [package.dependencies]
@@ -2376,4 +2376,4 @@ cffi = ["cffi (>=1.17,<2.0)", "cffi (>=2.0.0b)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "16305bbc2020d1f68856ac8cb5f0b38e032978591e501151a327dfa49b406a8c"
+content-hash = "89af2cdce388e8d880ce1025c56cbe28aa1f54085428ab467b73f5348a44be90"
