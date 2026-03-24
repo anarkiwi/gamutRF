@@ -20,7 +20,7 @@ jobs:
     environment:
       name: "release"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Get the version
@@ -33,20 +33,20 @@ jobs:
       id: change_platform
       run: if [ "${{ matrix.platform }}" == "arm64" ]; then echo MARCH=-march=armv8.2-a -mtune=cortex-a78 >> $GITHUB_OUTPUT; else echo MARCH=-march=native >> $GITHUB_OUTPUT ; fi
     - name: Set up qemu
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@v4
       with:
         platforms: all
     - name: Set up Docker Buildx
       id: buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: Login to Docker Hub
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms base
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: docker
         file: docker/Dockerfile.base
@@ -64,7 +64,7 @@ jobs:
     environment:
       name: "release"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Get the version
@@ -77,14 +77,14 @@ jobs:
       id: change_platform
       run: if [ "${{ matrix.platform }}" == "arm64" ]; then echo MARCH=-march=armv8.2-a -mtune=cortex-a78 >> $GITHUB_OUTPUT; else echo MARCH=-march=native >> $GITHUB_OUTPUT ; fi
     - name: Set up qemu
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@v4
       with:
         platforms: all
     - name: Set up Docker Buildx
       id: buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: Login to Docker Hub
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
         anarkiwi/gamutrf-base:${{ steps.change_version.outputs.VERSION }}-amd64
       if: github.repository == 'anarkiwi/gamutrf' && github.event_name == 'push'
     - name: Build and push platforms
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: .
         platforms: linux/arm64,linux/amd64

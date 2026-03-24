@@ -9,9 +9,9 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-numpy = "2.4.1"
-scipy = "1.17.0"
-pandas = "2.3.3"
+numpy = "2.4.3"
+scipy = "1.17.1"
+pandas = "3.0.1"
 python = ">=3.11,<3.13"
 pyzmq = "27.1.0"
 zstandard = "0.25.0"

@@ -11,12 +11,12 @@ jobs:
   docker_scan:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         ref: ${{ github.event.pull_request.head.ref }}
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
     - name: install semgrep
@@ -35,7 +35,7 @@ jobs:
         echo "::set-output name=found-count::$(cat /home/runner/reports/semgrep.out | jq '.results | length')"
     - name: Fail if found
       if: steps.d_scan.outputs.found-count != 0
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const fs = require('fs')
@@ -51,7 +51,7 @@ jobs:
 
           core.setFailed('Semgrep found errors in Dockerfiles or docker-compose files. Please check the uploaded report');
     - name: Upload scan reports
-      uses: actions/upload-artifact@v4.6.2
+      uses: actions/upload-artifact@v7.0.0
       if: failure()
       with:
         name: semgrep-docker-report
@@ -59,12 +59,12 @@ jobs:
   python_scan:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         ref: ${{ github.event.pull_request.head.ref }}
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
     - name: install semgrep
@@ -84,7 +84,7 @@ jobs:
         echo "::set-output name=python-found-count::$(cat /home/runner/reports/semgrep.out | jq '.results | length')"
     - name: Fail if found
       if: steps.py_scan.outputs.python-found-count > 0
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -101,7 +101,7 @@ jobs:
 
           core.setFailed('Semgrep found errors in Python files. Please check the uploaded report');
     - name: Upload scan reports
-      uses: actions/upload-artifact@v4.6.2
+      uses: actions/upload-artifact@v7.0.0
       if: failure()
       with:
         name: semgrep-python-report
