@@ -19,7 +19,7 @@ python = ">=3.12,<3.13"
 pyzmq = "27.1.0"
 scipy = "1.17.1"
 zstandard = "0.25.0"
-requests = "2.33.0"
+requests = "2.33.1"
 
 [tool.poetry.scripts]
 gamutrf-waterfall = 'gamutrfwaterfall.waterfall:main'
