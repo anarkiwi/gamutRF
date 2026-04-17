@@ -3,7 +3,6 @@ import sys
 
 from gamutrf.__main__ import scan
 
-
 sys.argv.append("-h")
 
 

@@ -26,7 +26,7 @@ class FakeBroker:
         if self._sock is None:
             raise ValueError("Socket is not open")
 
-        (conn, address) = self._sock.accept()
+        conn, address = self._sock.accept()
         conn.settimeout(10)
         self._conn = conn
 
