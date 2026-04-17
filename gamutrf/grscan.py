@@ -236,7 +236,7 @@ class grscan(gr.top_block):
             rotate_secs=rotate_secs,
             pre_fft=pretune,
             tag_now=self.tag_now,
-            low_power_hold_down=(not pretune and low_power_hold_down),
+            low_power_hold_down=(False if pretune else low_power_hold_down),
             slew_rx_time=slew_rx_time,
             peak_fft_range=peak_fft_range,
             antenna_switch=antenna_switch,
@@ -381,7 +381,6 @@ class grscan(gr.top_block):
                 )
 
         # TODO: provide new block that receives JSON-over-PMT and outputs to MQTT/zmq.
-        retune_fft_output_block = None
         if self.inference_blocks:
             inference_zmq_addr = f"tcp://{inference_addr}:{inference_port}"
             self.inference_output_block = inferenceoutput(
@@ -397,6 +396,7 @@ class grscan(gr.top_block):
                 inference_output_dir,
                 self.nest,
                 self.default_location,
+                antenna_switch,
             )
             if self.iq_inference_block:
                 if iq_inference_squelch_db is not None:
@@ -417,19 +417,11 @@ class grscan(gr.top_block):
                     self.connect((self.retune_pre_fft, 0), (self.iq_inference_block, 0))
                 self.connect((self.last_db_block, 0), (self.iq_inference_block, 1))
             if self.image_inference_block:
-                if stare:
-                    self.connect(
-                        (self.last_db_block, 0), (self.image_inference_block, 0)
-                    )
-                else:
-                    retune_fft_output_block = self.image_inference_block
+                self.connect((self.last_db_block, 0), (self.image_inference_block, 0))
             for block in self.inference_blocks:
                 self.msg_connect(
                     (block, "inference"), (self.inference_output_block, "inference")
                 )
-
-        if retune_fft_output_block:
-            self.connect((retune_fft, 0), (retune_fft_output_block, 0))
 
         if pretune:
             self.msg_connect((self.retune_pre_fft, "tune"), (self.sources[0], cmd_port))

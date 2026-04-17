@@ -23,6 +23,7 @@ class MQTTReporter:
         external_gps_server_port=None,
         nest=False,
         default_location=[0, 0, 0],
+        antenna_switch="",
     ):
         self.name = name
         self.mqtt_server = mqtt_server
@@ -40,6 +41,10 @@ class MQTTReporter:
         self.publish_lock = threading.Lock()
         self.serialno = 0
         self.default_location = default_location
+        self.antenna_switch = None
+        if antenna_switch:
+            self.antenna_switch = antenna_switch.split(",")
+
         if not self.gps_server and not self.external_gps_server:
             logging.error("mqtt enabled, no gps_server or external_gps_server found")
             self.gps_configured = False
@@ -197,6 +202,12 @@ class MQTTReporter:
                         "predictions": predictions,
                     }
                     publish_args["metadata"]["serial"] = self.serialno
+                    rx_sweep = int(metadata.get("rx_sweep", -1))
+                    if rx_sweep >= 0:
+                        if self.antenna_switch:
+                            publish_args["metadata"]["antenna"] = self.antenna_switch[
+                                rx_sweep % len(self.antenna_switch)
+                            ]
                     if position:
                         publish_args["metadata"].update(
                             {"location": {"position": position}}
