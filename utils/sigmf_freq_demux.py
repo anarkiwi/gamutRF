@@ -31,7 +31,9 @@ def filter_leading_annotation_zeros(samples, annotations, block_size=1024):
             continue
         end = min(start + length, len(samples))
         nonzero_indices = np.nonzero(samples[start:end])[0]
-        leading_zeros = int(nonzero_indices[0]) if len(nonzero_indices) > 0 else (end - start)
+        leading_zeros = (
+            int(nonzero_indices[0]) if len(nonzero_indices) > 0 else (end - start)
+        )
         remove_count = (leading_zeros // block_size) * block_size
         if remove_count > 0:
             keep[start : start + remove_count] = False
@@ -108,7 +110,9 @@ def demux_file(
         ]
 
         if filter_zeros:
-            samples, rel_annotations = filter_leading_annotation_zeros(samples, rel_annotations, block_size)
+            samples, rel_annotations = filter_leading_annotation_zeros(
+                samples, rel_annotations, block_size
+            )
 
         capture_length = len(samples)
 

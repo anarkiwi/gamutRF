@@ -130,8 +130,8 @@ def test_second_annotation_start_shifted_by_first_removal():
     samples = np.zeros(4096, dtype=complex)
     samples[1024:] = 1 + 1j
     anns = [
-        (0, 1024, {"label": "a"}),   # entirely zeros → dropped
-        (2048, 1024, {"label": "b"}), # starts at real data, shifts left by 1024
+        (0, 1024, {"label": "a"}),  # entirely zeros → dropped
+        (2048, 1024, {"label": "b"}),  # starts at real data, shifts left by 1024
     ]
     out_s, out_a = filter_leading_annotation_zeros(samples, anns)
     assert len(out_s) == 4096 - 1024
@@ -179,8 +179,13 @@ def _sigmf_class_mock(meta_out):
     """Return a MagicMock for SigMFFile that keeps real string constants intact."""
     mock_class = MagicMock()
     mock_class.return_value = meta_out
-    for attr in ("FREQUENCY_KEY", "START_INDEX_KEY", "LENGTH_INDEX_KEY",
-                 "SAMPLE_RATE_KEY", "DATATYPE_KEY"):
+    for attr in (
+        "FREQUENCY_KEY",
+        "START_INDEX_KEY",
+        "LENGTH_INDEX_KEY",
+        "SAMPLE_RATE_KEY",
+        "DATATYPE_KEY",
+    ):
         setattr(mock_class, attr, getattr(_RealSigMFFile, attr))
     return mock_class
 
@@ -224,7 +229,7 @@ def test_demux_file_filter_zeros_removes_annotation_leading_zeros(tmp_path):
 
     freq = int(200e6)
     sample_rate = int(1e6)
-    cap0 = {_FREQ_KEY: freq, _START_KEY: 0}   # skipped as first capture
+    cap0 = {_FREQ_KEY: freq, _START_KEY: 0}  # skipped as first capture
     cap1 = {_FREQ_KEY: freq, _START_KEY: 0}
 
     # layout (absolute): [0]=real [1:1025]=zeros [1025:4096]=real
@@ -249,7 +254,7 @@ def test_demux_file_filter_zeros_removes_annotation_leading_zeros(tmp_path):
     # sample[0] (real, outside annotation) kept; 1024 leading zeros of annotation removed;
     # remaining 3071 real samples kept → total 3072
     assert len(written) == 3072
-    assert written[0] == 1 + 0j   # sample before annotation: preserved
+    assert written[0] == 1 + 0j  # sample before annotation: preserved
     assert np.all(written[1:] == 1 + 0j)  # real data after zero removal
 
 
@@ -273,8 +278,8 @@ def test_demux_file_filter_zeros_adjusts_annotation_length(tmp_path):
 
     recorded_annotations = []
     meta_out = MagicMock()
-    meta_out.add_annotation.side_effect = lambda s, l, metadata=None: recorded_annotations.append(
-        (s, l, metadata)
+    meta_out.add_annotation.side_effect = (
+        lambda s, l, metadata=None: recorded_annotations.append((s, l, metadata))
     )
 
     with patch.object(_mod, "sigmffile") as mock_sigmffile, patch.object(
@@ -288,7 +293,7 @@ def test_demux_file_filter_zeros_adjusts_annotation_length(tmp_path):
     ann_start, ann_len, ann_meta = recorded_annotations[0]
     # relative start was 1; sample[0] kept before it → new_start stays 1
     assert ann_start == 1
-    assert ann_len == 3071   # 4095 - 1024 leading zeros removed
+    assert ann_len == 3071  # 4095 - 1024 leading zeros removed
     assert ann_meta["core:label"] == "signal"
 
 
