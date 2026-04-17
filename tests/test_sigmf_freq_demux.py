@@ -6,13 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
-
-_spec = importlib.util.spec_from_file_location(
-    "sigmf_freq_demux",
-    os.path.join(os.path.dirname(__file__), "..", "utils", "sigmf_freq_demux.py"),
-)
-_mod = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_mod)
+import gamutrf.sigmf_freq_demux as _mod
 
 filter_leading_annotation_zeros = _mod.filter_leading_annotation_zeros
 demux_file = _mod.demux_file
