@@ -2,6 +2,7 @@
 import concurrent.futures
 import logging
 import glob
+import multiprocessing
 import os
 import subprocess
 import tempfile
@@ -195,5 +196,6 @@ class GrscanTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":  # pragma: no cover
+    multiprocessing.set_start_method('spawn')
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(message)s")
     unittest.main()
