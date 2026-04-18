@@ -183,7 +183,7 @@ class GrscanTestCase(unittest.TestCase):
                 future = pool.submit(run_grscan_smoke, pretune, False, True, True)
                 self.assertFalse(future.exception())
             for wavelearner in (FakeWaveLearner(), None):
-                for write_samples in (0,):
+                for write_samples in (0, 1):
                     with concurrent.futures.ProcessPoolExecutor(max_workers=1) as pool:
                         future = pool.submit(
                             run_grscan_smoke,
