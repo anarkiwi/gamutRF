@@ -235,7 +235,7 @@ files = [
 ]
 
 [package.dependencies]
-numpy = {version = ">=1.26.0", markers = "python_version < \"3.14\""}
+numpy = {version = ">=2.3.3", markers = "python_version >= \"3.14\""}
 python-dateutil = ">=2.8.2"
 tzdata = {version = "*", markers = "sys_platform == \"win32\" or sys_platform == \"emscripten\""}
 
@@ -607,5 +607,5 @@ cffi = ["cffi (>=1.17,<2.0)", "cffi (>=2.0.0b)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.11,<3.13"
-content-hash = "3d920c7fa7126a3b9b90b8579c394ee707ee1d006c08fb983eb56efeb4ac3df2"
+python-versions = ">=3.14,<3.15"
+content-hash = "ea41d17fdd1be0459cc8683114ae0031074c9b77afcf9b9c65fcfc2ce8b6475b"
