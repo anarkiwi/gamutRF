@@ -7,18 +7,17 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /root/.config/pip
 COPY pip.conf pip.conf
 WORKDIR /root
-COPY renovate.json /root/
+ARG POETRY_VERSION=1.8.3
 RUN apt-get update && apt-get install --no-install-recommends -y -q \
     ca-certificates \
     curl \
     gcc \
     git \
     libev-dev \
-    jq \
     python3 \
     python3-dev \
     python3-pip && \
-    curl -sSL https://install.python-poetry.org | python3 - --version "$(jq -r .constraints.poetry /root/renovate.json)" && \
+    curl -sSL https://install.python-poetry.org | python3 - --version "${POETRY_VERSION}" && \
     poetry config virtualenvs.create false
 COPY --from=anarkiwi/gamutrf-base:latest /usr/local /usr/local
 WORKDIR /gamutrf

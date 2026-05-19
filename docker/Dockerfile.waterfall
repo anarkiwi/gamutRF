@@ -7,14 +7,13 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /root/.config/pip
 COPY pip.conf pip.conf
 WORKDIR /root
-COPY renovate.json /root/
+ARG POETRY_VERSION=1.8.3
 # hadolint ignore=DL3008
 RUN apt-get update && apt-get install --no-install-recommends -y -q \
     ca-certificates \
     curl \
     gcc \
     git \
-    jq \
     libcairo2-dev \
     libev-dev \
     python3 \
@@ -22,7 +21,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y -q \
     python3-pip \
     unzip \
     wget && \
-    curl -sSL https://install.python-poetry.org | python3 - --version "$(jq -r .constraints.poetry /root/renovate.json)" && \
+    curl -sSL https://install.python-poetry.org | python3 - --version "${POETRY_VERSION}" && \
     poetry config virtualenvs.create false
 WORKDIR /root
 RUN wget -Ojquery.min.js https://code.jquery.com/jquery-3.7.1.min.js
