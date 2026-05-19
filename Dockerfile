@@ -1,5 +1,5 @@
 # nosemgrep:github.workflows.config.dockerfile-source-not-pinned
-FROM ubuntu:24.04 AS installer
+FROM ubuntu:26.04 AS installer
 ARG POETRY_CACHE
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="${PATH}:/root/.local/bin"
@@ -33,7 +33,7 @@ COPY bin bin/
 RUN poetry install --no-interaction --no-ansi --only main
 
 # nosemgrep:github.workflows.config.dockerfile-source-not-pinned
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 ARG POETRY_CACHE
 LABEL maintainer="Charlie Lewis <clewis@iqt.org>"
 ENV DEBIAN_FRONTEND=noninteractive
